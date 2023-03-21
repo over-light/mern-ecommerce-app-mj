@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  client:
+    build:
+      context: './client'
+      dockerfile: Dockerfile
+    ports:
+      - ${REACT_APP_PORT}:${REACT_APP_PORT}
+    container_name: client-container
+    environment:
+      - WATCHPACK_POLLING=true
+    networks:
+      - mern-ecommerce-networks
+    volumes:
+      - ./client:/app
+    env_file:
+      - ./.env
+    depends_on:
+      - server
+  server:
+    build:
+      context: './server'
+      dockerfile: Dockerfile
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    container_name: server-container
+    networks:
+      - mern-ecommerce-networks
+    env_file:
+      - ./.env
+    volumes:
+      - ./server:/app
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    container_name: mongo-container
+    networks:
+      - mern-ecommerce-networks
+    volumes:
+      - mongoData:/data/db
+    env_file:
+      - ./.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USER_NAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_USER_PASSWORD}
+      - MONGO_INITDB_DATABASE=${DB_NAME}
+networks:
+  mern-ecommerce-networks:
+volumes:
+  mongoData:
+
+
