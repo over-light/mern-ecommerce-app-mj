@@ -1,0 +1,81 @@
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import axiosInstance from '../../utils/axiosInstance';
+import { userInterface } from '../../type/interface';
+
+
+type InitialState = {
+    loading: boolean
+    auth: object
+    error: any
+}
+
+const initialState: InitialState = {
+    loading: false,
+    auth: {},
+    error: ''
+}
+
+// Generates pending, fulfilled and rejected action types
+export const signup = createAsyncThunk('signup', async (user: userInterface) => {
+    try {
+        return await axiosInstance.post('auth/signup', user);
+    }
+    catch (err) {
+        return Promise.reject(err);
+    }
+})
+
+// Generates pending, fulfilled and rejected action types
+export const login = createAsyncThunk('login', async (user: { email: string, password: string }) => {
+    try {
+        return await axiosInstance.post('auth/login', user);
+    }
+    catch (err) {
+        return Promise.reject(err);
+    }
+})
+
+const authSlice = createSlice({
+    name: 'auth',
+    initialState,
+    reducers: {},
+    extraReducers: builder => {
+        builder.addCase(signup.pending, state => {
+            state.loading = true
+        })
+        builder.addCase(
+            signup.fulfilled,
+            (state, action: PayloadAction<any>) => {
+                state.loading = false
+                state.auth = action.payload
+                state.error = ''
+            }
+        )
+        builder.addCase(signup.rejected, (state, action) => {
+            state.loading = false
+            state.auth = {}
+            state.error = action.error || 'Something went wrong'
+        })
+
+
+        //Login
+        builder.addCase(login.pending, state => {
+            state.loading = true
+        })
+        builder.addCase(
+            login.fulfilled,
+            (state, action: PayloadAction<any>) => {
+                state.loading = false
+                state.auth = action.payload
+                state.error = ''
+            }
+        )
+        builder.addCase(login.rejected, (state, action) => {
+            state.loading = false
+            state.auth = {}
+            state.error = action.error.message || 'Something went wrong'
+        })
+    }
+})
+
+export default authSlice.reducer
