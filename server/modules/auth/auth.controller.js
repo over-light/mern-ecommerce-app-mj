@@ -4,15 +4,8 @@ const HttpError = require('../../models/http-error');
 const bcrypt = require('bcryptjs');
 const sendEmail = require('../../utils/sendEmail');
 const { validationResult } = require('express-validator');
+const { messageString } = require('./auth.constant')
 
-const String = {
-    userExist: 'User exists already, please login instead.',
-    signupFailed: 'Signing up failed, please try again later.',
-    notCreateAccount: 'Could not create user, please try again.',
-    signupSuccess: 'Signup success',
-    checkEmail: "An Email sent to your account please verify",
-    activateAccount: 'Activate your account'
-}
 //Create new account
 exports.signup = async (req, res, next) => {
 
@@ -29,14 +22,14 @@ exports.signup = async (req, res, next) => {
         const existingUser = await AuthService?.getByField({ email: email });
         if (existingUser) {
             const error = new HttpError(
-                String?.userExist,
+                messageString?.userExist,
                 422
             );
             return next(error);
         }
     } catch (err) {
         const error = new HttpError(
-            String?.signupFailed,
+            messageString?.signupFailed,
             500
         );
         return next(error);
@@ -48,7 +41,7 @@ exports.signup = async (req, res, next) => {
         hashedPassword = await bcrypt.hash(password, 12);
     } catch (err) {
         const error = new HttpError(
-            String?.notCreateAccount,
+            messageString?.notCreateAccount,
             500
         );
         return next(error);
@@ -66,7 +59,7 @@ exports.signup = async (req, res, next) => {
             isAdmin: false
         }
         //Create new user
-        const user = await AuthService?.signup(payload);
+        const user = await AuthService?.createUser(payload);
         // Create token
         const token = await emailToken.createToken(user);
 
@@ -85,8 +78,8 @@ exports.signup = async (req, res, next) => {
                 </p>
     </div>`
 
-        await sendEmail(user.email, String?.activateAccount, url, emailTemplate);
-        res.status(201)?.json({ message: String?.checkEmail })
+        await sendEmail(user.email, messageString?.activateAccount, url, emailTemplate);
+        res.status(201)?.json({ message: messageString?.checkEmail })
     } catch (err) {
         res.status(500)?.json({ error: err?.message });
     }
@@ -95,13 +88,12 @@ exports.signup = async (req, res, next) => {
 exports.verifyUser = async (req, res, next) => {
     let user;
     try {
-
         //Find user
         user = await AuthService.getByField({ _id: req.params.id });
 
         if (!user) {
             const error = new HttpError(
-                'Invalid Link',
+                messageString?.inValidLink,
                 400
             );
             return next(error);
@@ -112,7 +104,7 @@ exports.verifyUser = async (req, res, next) => {
             token: req.params.token
         });
         if (!token) {
-            return res.status(400).json({ message: 'invalid Link' })
+            return res.status(400).json({ message: messageString?.inValidLink })
         }
         //Active user
         await AuthService.updateUser({ _id: user._id, isActive: true });
@@ -121,11 +113,11 @@ exports.verifyUser = async (req, res, next) => {
         await emailToken.deleteToken(token);
     } catch (err) {
         const error = new HttpError(
-            'Something went wrong, please try again later.',
+            messageString?.somethingWrong,
             500
         );
         return next(err);
     }
 
-    res.status(200).json({ 'message': 'User verify successfully' })
+    res.status(200).json({ 'message': messageString?.userVerifySuccess })
 }

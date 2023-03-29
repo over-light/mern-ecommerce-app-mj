@@ -1,9 +1,9 @@
 
 const AuthModel = require("./auth.model");
-exports.signup = async (user) => {
+exports.createUser = async (user) => {
     return await AuthModel.create(user);
 };
-exports.getUserById = async (id) => {
+exports.getById = async (id) => {
     return await AuthModel.findById(id);
 };
 exports.getByField = async (id) => {

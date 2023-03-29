@@ -16,5 +16,5 @@ exports.findToken = async (user) => {
 }
 
 exports.deleteToken = async (token) => {
-    return await emailToken?.delete(token)
+    return await emailToken?.deleteToken(token)
 }

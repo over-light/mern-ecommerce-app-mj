@@ -7,6 +7,6 @@ exports.createToken = async (token) => {
 exports.findToken = async (token) => {
     return await EmailModel.findOne(token);
 };
-exports.delete = async (data) => {
+exports.deleteToken = async (data) => {
     return await EmailModel.deleteOne(data);
 };
