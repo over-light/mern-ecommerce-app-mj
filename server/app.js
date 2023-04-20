@@ -5,6 +5,7 @@ const dotenv = require('dotenv').config();
 
 const PORT = process.env.SERVER_PORT || 8000;
 const authRoute = require('./modules/auth/auth.route');
+const HttpError = require('./models/http-error');
 
 const app = express();
 const dbUrl = `mongodb+srv://${process.env.DB_USER_NAME}:${process.env.DB_USER_PASSWORD}@cluster0.ezwt6uh.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`

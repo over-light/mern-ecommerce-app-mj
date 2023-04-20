@@ -10,3 +10,6 @@ exports.findToken = async (token) => {
 exports.deleteToken = async (data) => {
     return await EmailModel.deleteOne(data);
 };
+exports.updateOne = async (data) => {
+    return await EmailModel.updateOne(data);
+};

@@ -18,3 +18,6 @@ exports.findToken = async (user) => {
 exports.deleteToken = async (token) => {
     return await emailToken?.deleteToken(token)
 }
+exports.updateOne = async (token) => {
+    return await emailToken?.updateOne(token)
+}

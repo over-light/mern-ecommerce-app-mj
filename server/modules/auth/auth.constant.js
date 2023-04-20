@@ -7,5 +7,10 @@ exports.messageString = {
     activateAccount: 'Activate your account',
     somethingWrong: 'Something went wrong, please try again later.',
     userVerifySuccess: 'User verify successfully',
-    inValidLink: 'Invalid Link'
+    inValidLink: 'Invalid Link',
+    accountNotActive: 'Your account is not active, please check your email and verify account',
+    messageString: 'Account activated successfully',
+    accountActivated: 'Account activated',
+    loginFailed: 'Could not log you in, please check your credentials and try again.',
+    invalidCred: 'Invalid credentials, could not log you in.'
 }

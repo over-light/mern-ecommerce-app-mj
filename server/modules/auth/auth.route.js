@@ -20,6 +20,6 @@ router.post('/auth/signup', [
     ],
 ], userControllers.signup);
 
-router.get('/user/:id/verify/:token', userControllers.verifyUser);
-
+router.get('/verify-user/:id/verify/:token', userControllers.verifyUser);
+router.post('/auth/login', userControllers.login);
 module.exports = router;
