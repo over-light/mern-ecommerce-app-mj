@@ -129,11 +129,7 @@ exports.login = async (req, res, next) => {
     }
 
     if (!existingUser) {
-        const error = new HttpError(
-            'Invalid credentials, could not log you in.',
-            500
-        );
-        return next(error);
+        return res.status(404).send({ error: 'Invalid credentials, could not log you in.' })
     }
 
     if (existingUser && !existingUser.isActive) {

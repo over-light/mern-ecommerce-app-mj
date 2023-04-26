@@ -3,8 +3,17 @@ import { useState } from "react";
 import axiosInstance from '../utils/axiosInstance';
 import { userInterface } from "../type/interface";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from '../store/hooks'
+import { signup, login } from '../store/reducers/authSlice'
+
+
 export const useAuth = () => {
     const navigate = useNavigate();
+    const auth = useAppSelector(state => state.auth);
+    const dispatch = useAppDispatch();
+
+    console.log("auth:::::", auth)
+    //Local State
     const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
     const [user, setUser] = useState<userInterface>(
         {
@@ -17,7 +26,7 @@ export const useAuth = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true)
 
     const onHandleChange = (e: { target: { value: string; }; }, name: string) => {
-        setUser({ ...user, [name]: e.target.value })
+        setUser({ ...user, [name]: e.target.value });
     }
     const onLoginModalToggle = (): void => {
         setIsLoginModal(!isLoginModal);
@@ -28,23 +37,13 @@ export const useAuth = () => {
 
     const onLogin = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-        const { email, password } = user;
-        try {
-            await axiosInstance.post('auth/login', { email, password });
-        }
-        catch (err) {
-            console.log(err)
-        }
+
+        dispatch(login({ email: user?.email, password: user.password }))
     }
 
     const onSignup = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-        try {
-            await axiosInstance.post('auth/signup', user);
-        }
-        catch (err) {
-            console.log(err)
-        }
+        dispatch(signup(user));
     }
 
     const verifyUser = async (token: string | undefined, id: string | undefined) => {

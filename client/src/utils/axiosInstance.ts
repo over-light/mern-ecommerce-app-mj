@@ -21,17 +21,4 @@ axiosInstance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-axiosInstance.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response.status === 401) {
-            // handle unauthorized access error
-        } else if (error.response.status === 404) {
-            // handle not found error
-        } else {
-            // handle other errors
-        }
-        return Promise.reject(error);
-    }
-);
 export default axiosInstance;
