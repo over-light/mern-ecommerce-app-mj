@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction, createAction } from '@reduxjs/toolkit'
 import axiosInstance from '../../utils/axiosInstance';
 import { userInterface } from '../../type/interface';
+import { getErrorMessage } from '../../utils/commonFunction';
+
 
 type InitialState = {
     loading: boolean
@@ -22,7 +24,8 @@ export const signup = createAsyncThunk('signup', async ({ user, cb }: { user: us
         return response;
     }
     catch (err) {
-        return Promise.reject(err);
+        const message = getErrorMessage(err)
+        return Promise.reject(message);
     }
 })
 
@@ -36,7 +39,8 @@ export const login = createAsyncThunk('login', async ({ user, cb }: { user: { em
         return response?.data
     }
     catch (err) {
-        return Promise.reject(err);
+        const message = getErrorMessage(err)
+        return Promise.reject(message);
     }
 })
 export const revertAll = createAction('REVERT_ALL')
@@ -63,7 +67,7 @@ const authSlice = createSlice({
         builder.addCase(signup.rejected, (state, action) => {
             state.loading = false
             state.auth = {}
-            state.error = action.error || 'Something went wrong'
+            state.error = action.error.message || 'Something went wrong'
         })
 
         //Login

@@ -16,27 +16,17 @@ exports.signup = async (req, res, next) => {
     //Validate body data
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return next(
-            new HttpError('Invalid inputs passed, please check your data.', 422)
-        );
+        return res.status(422).json({ message: 'Invalid inputs passed, please check your data.' })
     }
 
     const { name, email, password, username, mobile } = req.body;
     try {
         const existingUser = await AuthService?.getByField({ email: email });
         if (existingUser) {
-            const error = new HttpError(
-                messageString?.userExist,
-                422
-            );
-            return next(error);
+            return res.status(422).json({ message: messageString?.userExist })
         }
     } catch (err) {
-        const error = new HttpError(
-            messageString?.signupFailed,
-            500
-        );
-        return next(error);
+        return res.status(500).json({ message: messageString?.signupFailed })
     }
     //Create hash password
     let hashedPassword;
@@ -44,11 +34,7 @@ exports.signup = async (req, res, next) => {
     try {
         hashedPassword = await bcrypt.hash(password, 12);
     } catch (err) {
-        const error = new HttpError(
-            messageString?.notCreateAccount,
-            500
-        );
-        return next(error);
+        return res.status(500).json({ message: messageString?.notCreateAccount })
     }
 
     //Save data in db
@@ -72,7 +58,7 @@ exports.signup = async (req, res, next) => {
         await sendEmail(user.email, messageString?.activateAccount, url, emailTemplate.verifyAccount(url));
         res.status(201)?.json({ message: messageString?.checkEmail })
     } catch (err) {
-        res.status(500)?.json({ error: err?.message });
+        res.status(500)?.json({ message: err?.message });
     }
 };
 
@@ -103,11 +89,7 @@ exports.verifyUser = async (req, res, next) => {
         //Remove token
         await emailToken.deleteToken(token);
     } catch (err) {
-        const error = new HttpError(
-            messageString?.somethingWrong,
-            500
-        );
-        return next(err);
+        return res.status(500).json({ message: messageString?.somethingWrong })
     }
     await sendEmail(user.email, messageString?.accountActivated, '', emailTemplate.accountActivated());
     res.status(200).json({ 'message': messageString?.userVerifySuccess })
@@ -120,16 +102,11 @@ exports.login = async (req, res, next) => {
     try {
         existingUser = await AuthService?.getByField({ email: email });
     } catch (err) {
-
-        const error = new HttpError(
-            'Logging in failed, please try again later.',
-            500
-        );
-        return next(error);
+        return res.status(500).json({ message: 'Logging in failed, please try again later.' })
     }
 
     if (!existingUser) {
-        return res.status(404).send({ error: 'Invalid credentials, could not log you in.' })
+        return res.status(404).send({ message: 'Invalid credentials, could not log you in.' })
     }
 
     if (existingUser && !existingUser.isActive) {
@@ -139,21 +116,14 @@ exports.login = async (req, res, next) => {
         const url = `${process.env.BASE_URL}/user/${existingUser._id}/verify/${token}`;
         await sendEmail(existingUser.email, messageString?.activateAccount, url, emailTemplate.verifyAccount(url));
 
-        const error = new HttpError(
-            messageString?.accountNotActive,
-            500);
-        return next(error);
+        return res.status(500).json({ message: messageString?.accountNotActive })
     }
 
     let isValidPassword = false;
     try {
         isValidPassword = await bcrypt.compare(password, existingUser.password);
     } catch (err) {
-        const error = new HttpError(
-            messageString?.loginFailed,
-            500
-        );
-        return next(error);
+        return res.status(500).json({ message: messageString?.loginFailed })
     }
 
     if (!isValidPassword) {
@@ -174,11 +144,7 @@ exports.login = async (req, res, next) => {
             { expiresIn: '1h' }
         );
     } catch (err) {
-        const error = new HttpError(
-            'Logging in failed, please try again later.',
-            500
-        );
-        return next(err);
+        return res.status(500).json({ message: 'Logging in failed, please try again later.' })
     }
 
     let refreshToken;
@@ -186,11 +152,7 @@ exports.login = async (req, res, next) => {
         refreshToken = jwt.sign({ userId: existingUser.id, email: existingUser.email, username: existingUser.username }, 'check_refresh', { expiresIn: process.env.REFRESH_TOKEN_EXPIRED });
     }
     catch (err) {
-        const error = new HttpError(
-            messageString?.loginFailed,
-            500
-        );
-        return next(error);
+        return res.status(500).json({ message: messageString?.loginFailed })
     }
     res.status(201).json({
         userId: existingUser.id,

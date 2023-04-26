@@ -78,7 +78,6 @@ export const useAuth = () => {
         }
         catch (err) {
             console.log(err);
-
         }
     }
 
