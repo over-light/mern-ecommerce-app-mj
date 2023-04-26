@@ -87,7 +87,11 @@ exports.verifyUser = async (req, res, next) => {
                 messageString?.inValidLink,
                 400
             );
+<<<<<<< HEAD
             return res.status(400).json({ message: messageString?.inValidLink })
+=======
+            return next(error);
+>>>>>>> 23cff9b89f8bec17e19a5099e677dbb2a0a9e52c
         }
         // Find token
         const token = await emailToken.findToken({
@@ -136,8 +140,13 @@ exports.login = async (req, res, next) => {
         const token = crypto.randomBytes(32).toString('hex')
         await emailToken.updateOne({ userId: existingUser._id, token: token, createdAt: Date.now() });
 
+<<<<<<< HEAD
         const url = `${process.env.BASE_URL}/user/${existingUser._id}/verify/${token}`;
         await sendEmail(existingUser.email, messageString?.activateAccount, url, emailTemplate.verifyAccount(url));
+=======
+        const url = `${process.env.BASE_URL}user/${existingUser._id}/verify/${token}`
+        await sendEmail(existingUser.email, messageString?.activateAccount, url, emailTemplate(url));
+>>>>>>> 23cff9b89f8bec17e19a5099e677dbb2a0a9e52c
 
         const error = new HttpError(
             messageString?.accountNotActive,
