@@ -1,19 +1,21 @@
 
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, TextField, Typography, Alert } from "@mui/material";
 
 type SignupProps = {
     switchAuthMode: any;
     registerFormik: any;
+    auth: any
 }
 
-const Signup: React.FC<SignupProps> = ({ switchAuthMode, registerFormik }) => {
+const Signup: React.FC<SignupProps> = ({ switchAuthMode, registerFormik, auth }) => {
     const { dirty, isValid, values, errors, touched, handleChange, handleSubmit } = registerFormik;
     return (
         <form onSubmit={handleSubmit}>
+            {auth?.error && <Alert severity="error">{auth?.error}</Alert>}
             <Typography mt={2}>
                 <TextField
                     fullWidth
-                    name="fullName"
+                    name="name"
                     label="Full Name"
                     variant='standard'
                     value={values.name}
@@ -49,7 +51,19 @@ const Signup: React.FC<SignupProps> = ({ switchAuthMode, registerFormik }) => {
                     helperText={touched.password && errors.password}
                 />
             </Typography>
-
+            <Typography mt={2}>
+                <TextField
+                    fullWidth
+                    type="password"
+                    name="retypePassword"
+                    label="Verify Password"
+                    variant='standard'
+                    value={values.retypePassword}
+                    onChange={handleChange}
+                    error={touched.retypePassword && Boolean(errors.retypePassword)}
+                    helperText={touched.retypePassword && errors.retypePassword}
+                />
+            </Typography>
 
             <Typography mt={2}>
                 <TextField

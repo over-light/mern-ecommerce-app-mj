@@ -1,19 +1,22 @@
 
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, TextField, Typography, Alert } from "@mui/material";
 
 type LoginProps = {
     switchAuthMode: () => void;
     loginFormik: any;
+    auth: any
 }
 
 const Login: React.FC<LoginProps> = ({
     switchAuthMode,
-    loginFormik
+    loginFormik,
+    auth
 }) => {
-    const { dirty, isValid, values, errors, touched, handleChange, handleSubmit } = loginFormik;
+    const { dirty, isValid, values, errors, touched, handleChange, handleSubmit, } = loginFormik;
 
     return (
         <form onSubmit={handleSubmit}>
+            {auth?.error && <Alert severity="error">{auth?.error}</Alert>}
             <Typography mt={2}>
                 <TextField
                     fullWidth

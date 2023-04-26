@@ -13,19 +13,15 @@ export const useAuth = () => {
     const auth = useAppSelector(state => state.auth);
     const dispatch = useAppDispatch();
 
-    console.log("auth", auth)
+
     //Local State
     const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
 
     const [isLogin, setIsLogin] = useState<boolean>(true)
 
+    const onLoginModalToggle = () => setIsLoginModal(!isLoginModal);
 
-    const onLoginModalToggle = (): void => {
-        setIsLoginModal(!isLoginModal);
-    };
-    const switchAuthMode = () => {
-        setIsLogin(!isLogin);
-    }
+    const switchAuthMode = () => setIsLogin(!isLogin);
 
     const verifyUser = async (token: string | undefined, id: string | undefined) => {
         try {
@@ -47,10 +43,12 @@ export const useAuth = () => {
         validationSchema: LoginSchema,
         onSubmit: values => {
             dispatch(login({
-                email: values?.email,
-                password: values.password
-            })
-            )
+                user: {
+                    email: values?.email,
+                    password: values.password
+                },
+                cb: onLoginModalToggle
+            }))
         },
     });
     //Register Validation
@@ -59,18 +57,19 @@ export const useAuth = () => {
             name: '',
             email: '',
             password: '',
+            retypePassword: '',
             mobile: '',
         },
         validationSchema: RegisterSchema,
         onSubmit: values => {
-            dispatch(signup(
-                {
+            dispatch(signup({
+                user: {
                     email: values?.email,
                     password: values.password,
                     name: values.name,
-                    mobile: values.mobile
-                })
-            );
+                    mobile: values.mobile,
+                }, cb: switchAuthMode
+            }));
         },
     });
     return {
@@ -80,6 +79,7 @@ export const useAuth = () => {
         isLogin,
         verifyUser,
         loginFormik,
-        registerFormik
+        registerFormik,
+        auth
     };
 };

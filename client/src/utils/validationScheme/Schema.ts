@@ -16,5 +16,13 @@ export const RegisterSchema = Yup.object().shape({
     password: Yup.string()
         .min(6, "Password must be 6 characters at minimum")
         .required("Password is required"),
+    retypePassword: Yup
+        .string()
+        .required('Please retype your password.')
+        .oneOf([Yup.ref('password')], 'Your passwords do not match.'),
+    name: Yup.string()
+        .required("Name is required"),
+    mobile: Yup.string()
+        .required("Mobile is required"),
 
 });

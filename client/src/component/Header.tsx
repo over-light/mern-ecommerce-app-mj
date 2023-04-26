@@ -20,8 +20,8 @@ const pages: Array<string> = ['Products', 'Blog'];
 type HeaderProps = {}
 
 export const Header: React.FC<HeaderProps> = () => {
-    const { isLoginModal, onLoginModalToggle, switchAuthMode, isLogin, loginFormik, registerFormik } = useAuth()
-
+    const { isLoginModal, onLoginModalToggle, switchAuthMode, isLogin, loginFormik, registerFormik, auth } = useAuth()
+    console.log("auth::::>", auth)
     return (
         <>
             <AppBar position="static">
@@ -56,7 +56,9 @@ export const Header: React.FC<HeaderProps> = () => {
                             ))}
                         </Box>
 
-                        <Button color="inherit" onClick={onLoginModalToggle}>Login</Button>
+                        {auth?.auth?.token ?
+                            "" : <Button color="inherit" onClick={onLoginModalToggle}>Login</Button>
+                        }
                     </Toolbar>
                 </Container>
             </AppBar>
@@ -68,8 +70,8 @@ export const Header: React.FC<HeaderProps> = () => {
             >
                 {
                     isLogin ?
-                        <Login loginFormik={loginFormik} switchAuthMode={switchAuthMode} /> :
-                        <Signup registerFormik={registerFormik} switchAuthMode={switchAuthMode} />
+                        <Login auth={auth} loginFormik={loginFormik} switchAuthMode={switchAuthMode} /> :
+                        <Signup auth={auth} registerFormik={registerFormik} switchAuthMode={switchAuthMode} />
                 }
 
             </Modal>

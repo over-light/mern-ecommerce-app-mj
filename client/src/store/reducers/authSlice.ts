@@ -5,7 +5,7 @@ import { userInterface } from '../../type/interface';
 
 type InitialState = {
     loading: boolean
-    auth: object
+    auth: any
     error: any
 }
 
@@ -16,9 +16,11 @@ const initialState: InitialState = {
 }
 
 // Generates pending, fulfilled and rejected action types
-export const signup = createAsyncThunk('signup', async (user: userInterface) => {
+export const signup = createAsyncThunk('signup', async ({ user, cb }: { user: userInterface, cb: any }) => {
     try {
-        return await axiosInstance.post('auth/signup', user);
+        const response = await axiosInstance.post('auth/signup', user);
+        cb();
+        return response;
     }
     catch (err) {
         return Promise.reject(err);
@@ -26,9 +28,13 @@ export const signup = createAsyncThunk('signup', async (user: userInterface) => 
 })
 
 // Generates pending, fulfilled and rejected action types
-export const login = createAsyncThunk('login', async (user: { email: string, password: string }) => {
+export const login = createAsyncThunk('login', async ({ user, cb }: { user: { email: string, password: string }, cb: any }) => {
     try {
-        return await axiosInstance.post('auth/login', user);
+        const response = await axiosInstance.post('auth/login', user);
+        cb();
+        sessionStorage.setItem('user', JSON.stringify(response?.data));
+
+        return response?.data
     }
     catch (err) {
         return Promise.reject(err);
@@ -56,7 +62,6 @@ const authSlice = createSlice({
             state.auth = {}
             state.error = action.error || 'Something went wrong'
         })
-
 
         //Login
         builder.addCase(login.pending, state => {

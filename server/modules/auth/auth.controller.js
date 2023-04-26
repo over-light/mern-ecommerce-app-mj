@@ -87,7 +87,7 @@ exports.verifyUser = async (req, res, next) => {
                 messageString?.inValidLink,
                 400
             );
-            return next(error);
+            return res.status(400).json({ message: messageString?.inValidLink })
         }
         // Find token
         const token = await emailToken.findToken({
@@ -136,7 +136,7 @@ exports.login = async (req, res, next) => {
         const token = crypto.randomBytes(32).toString('hex')
         await emailToken.updateOne({ userId: existingUser._id, token: token, createdAt: Date.now() });
 
-        const url = `${process.env.BASE_URL}user/${existingUser._id}/verify/${token}`
+        const url = `${process.env.BASE_URL}/user/${existingUser._id}/verify/${token}`;
         await sendEmail(existingUser.email, messageString?.activateAccount, url, emailTemplate.verifyAccount(url));
 
         const error = new HttpError(
