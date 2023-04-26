@@ -17,11 +17,10 @@ import Signup from "../pages/auth/Signup";
 
 const pages: Array<string> = ['Products', 'Blog'];
 
-
 type HeaderProps = {}
 
 export const Header: React.FC<HeaderProps> = () => {
-    const { isLoginModal, onLoginModalToggle, onHandleChange, user, onLogin, switchAuthMode, isLogin, onSignup } = useAuth()
+    const { isLoginModal, onLoginModalToggle, switchAuthMode, isLogin, loginFormik, registerFormik } = useAuth()
 
     return (
         <>
@@ -69,8 +68,8 @@ export const Header: React.FC<HeaderProps> = () => {
             >
                 {
                     isLogin ?
-                        <Login onHandleChange={onHandleChange} user={user} onLogin={onLogin} switchAuthMode={switchAuthMode} /> :
-                        <Signup onSignup={onSignup} user={user} onHandleChange={onHandleChange} switchAuthMode={switchAuthMode} />
+                        <Login loginFormik={loginFormik} switchAuthMode={switchAuthMode} /> :
+                        <Signup registerFormik={registerFormik} switchAuthMode={switchAuthMode} />
                 }
 
             </Modal>

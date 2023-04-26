@@ -137,7 +137,7 @@ exports.login = async (req, res, next) => {
         await emailToken.updateOne({ userId: existingUser._id, token: token, createdAt: Date.now() });
 
         const url = `${process.env.BASE_URL}user/${existingUser._id}/verify/${token}`
-        await sendEmail(existingUser.email, messageString?.activateAccount, url, emailTemplate(url));
+        await sendEmail(existingUser.email, messageString?.activateAccount, url, emailTemplate.verifyAccount(url));
 
         const error = new HttpError(
             messageString?.accountNotActive,
