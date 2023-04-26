@@ -1,7 +1,6 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction, createAction } from '@reduxjs/toolkit'
 import axiosInstance from '../../utils/axiosInstance';
 import { userInterface } from '../../type/interface';
-
 
 type InitialState = {
     loading: boolean
@@ -40,12 +39,16 @@ export const login = createAsyncThunk('login', async ({ user, cb }: { user: { em
         return Promise.reject(err);
     }
 })
+export const revertAll = createAction('REVERT_ALL')
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
-    reducers: {},
+    reducers: {
+        reset: () => initialState
+    },
     extraReducers: builder => {
+        builder.addCase(revertAll, () => initialState)
         builder.addCase(signup.pending, state => {
             state.loading = true
         })

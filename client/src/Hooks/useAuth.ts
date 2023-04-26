@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import axiosInstance from '../utils/axiosInstance';
 import { useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from '../store/hooks'
-import { signup, login } from '../store/reducers/authSlice'
+import { signup, login, revertAll } from '../store/reducers/authSlice'
 import { LoginSchema, RegisterSchema } from "../utils/validationScheme/Schema";
 
 
@@ -12,27 +12,6 @@ export const useAuth = () => {
     const navigate = useNavigate();
     const auth = useAppSelector(state => state.auth);
     const dispatch = useAppDispatch();
-
-
-    //Local State
-    const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
-
-    const [isLogin, setIsLogin] = useState<boolean>(true)
-
-    const onLoginModalToggle = () => setIsLoginModal(!isLoginModal);
-
-    const switchAuthMode = () => setIsLogin(!isLogin);
-
-    const verifyUser = async (token: string | undefined, id: string | undefined) => {
-        try {
-            await axiosInstance.get(`/verify-user/${id}/verify/${token}`);
-            navigate('/')
-        }
-        catch (err) {
-            console.log(err);
-
-        }
-    }
 
     //Login Validation 
     const loginFormik = useFormik({
@@ -72,6 +51,37 @@ export const useAuth = () => {
             }));
         },
     });
+
+    //Local State
+    const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
+
+    const [isLogin, setIsLogin] = useState<boolean>(true)
+
+    const onLoginModalToggle = () => {
+        setIsLoginModal(!isLoginModal);
+        dispatch(revertAll());
+        registerFormik?.resetForm();
+        loginFormik?.resetForm();
+    }
+
+    const switchAuthMode = () => {
+        setIsLogin(!isLogin);
+        dispatch(revertAll());
+        registerFormik?.resetForm();
+        loginFormik?.resetForm();
+    };
+
+    const verifyUser = async (token: string | undefined, id: string | undefined) => {
+        try {
+            await axiosInstance.get(`/verify-user/${id}/verify/${token}`);
+            navigate('/')
+        }
+        catch (err) {
+            console.log(err);
+
+        }
+    }
+
     return {
         isLoginModal,
         onLoginModalToggle,

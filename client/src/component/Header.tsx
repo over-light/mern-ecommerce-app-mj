@@ -9,19 +9,22 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import AdbIcon from '@mui/icons-material/Adb';
+import Avatar from '@mui/material/Avatar';
+import Chip from '@mui/material/Chip';
 
 import { Modal } from "./Modal";
 import { useAuth } from "../Hooks";
 import Login from "../pages/auth/Login";
 import Signup from "../pages/auth/Signup";
 
+
 const pages: Array<string> = ['Products', 'Blog'];
 
 type HeaderProps = {}
 
 export const Header: React.FC<HeaderProps> = () => {
-    const { isLoginModal, onLoginModalToggle, switchAuthMode, isLogin, loginFormik, registerFormik, auth } = useAuth()
-    console.log("auth::::>", auth)
+    const { isLoginModal, onLoginModalToggle, switchAuthMode, isLogin, loginFormik, registerFormik, auth } = useAuth();
+    const firstLetter = auth?.auth?.name?.split("")?.[0]?.toUpperCase() || "";
     return (
         <>
             <AppBar position="static">
@@ -56,9 +59,10 @@ export const Header: React.FC<HeaderProps> = () => {
                             ))}
                         </Box>
 
-                        {auth?.auth?.token ?
-                            "" : <Button color="inherit" onClick={onLoginModalToggle}>Login</Button>
-                        }
+                        {auth?.auth?.token ? (
+                            <Chip sx={{ cursor: 'pointer' }} avatar={<Avatar>{firstLetter}</Avatar>} color='secondary' label={auth?.auth?.name} />
+                        ) :
+                            <Button color="inherit" onClick={onLoginModalToggle}>Login</Button>}
                     </Toolbar>
                 </Container>
             </AppBar>
