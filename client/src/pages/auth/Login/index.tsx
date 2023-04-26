@@ -1,5 +1,5 @@
-import { InputField, } from "../../../component/InputField";
-import { Button } from "../../../component/Button";
+
+import { Button, TextField, Typography } from "@mui/material";
 import { userInterface } from "../../../type/interface";
 
 type LoginProps = {
@@ -13,32 +13,33 @@ const Login: React.FC<LoginProps> = ({ onHandleChange, user, onLogin, switchAuth
 
     return (
         <form onSubmit={onLogin}>
-            <div className="mb-3 row">
-                <InputField
-                    id={"email"}
-                    type={"email"}
-                    label={"Email"}
-                    onHandleChange={(e: { target: { value: string; }; }) => { onHandleChange(e, 'email'); }}
+            <Typography mt={2}>
+                <TextField
+                    fullWidth
+                    type="email"
+                    label="Email"
+                    variant="standard"
                     value={user?.email}
-                    cssClass="customInputs"
+                    onChange={(e: { target: { value: string; }; }) => { onHandleChange(e, 'email'); }}
                 />
-            </div>
-            <div className="mb-3 row">
-                <InputField
-                    id={"password"}
-                    type={"password"}
-                    label={"Password"}
-                    onHandleChange={(e: { target: { value: string; }; }) => { onHandleChange(e, 'password'); }}
-                    value={user?.password}
-                    cssClass="customInputs" />
-            </div>
-            <div className="d-flex justify-content-between mt-n1">
+            </Typography>
+            <Typography mt={2}>
+                <TextField
+                    fullWidth
+                    type="password"
+                    label="Password"
+                    variant="standard"
+                    value={user?.email}
+                    onChange={(e: { target: { value: string; }; }) => { onHandleChange(e, 'email'); }}
+                />
+            </Typography>
+            <Typography mt={2} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span className="customLink" onClick={switchAuthMode}>Register</span>
                 <span className="customLink" >Forgot</span>
-            </div>
-            <div className="text-center">
-                <Button type="submit" cssClass={"btn btn-primary customButton"}>Login</Button>
-            </div>
+            </Typography>
+            <Typography mt={2} sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Button type="submit" variant="contained" color="primary">Login</Button>
+            </Typography>
         </form>
     );
 }

@@ -5,22 +5,42 @@ import { store } from './store/store'
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-// Bootstrap CSS
-import "bootstrap/dist/css/bootstrap.min.css";
-// Bootstrap Bundle JS
-import "bootstrap/dist/js/bootstrap.bundle.min";
-
 //Custom CSS
 import './styles/style.scss'
+import { ThemeProvider } from '@emotion/react';
+import { createTheme } from '@mui/material';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
+const theme = createTheme({
+  palette: {
+
+    primary: {
+      main: '#e91e63',
+    },
+    secondary: {
+      main: '#7b809a',
+    },
+    success: {
+      main: '#4caf50'
+    },
+    warning: {
+      main: '#fb8c00'
+    },
+    error: {
+      main: '#f44335'
+    },
+  },
+});
 
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ThemeProvider theme={theme}>
+        <App />
+
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>
 );

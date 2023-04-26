@@ -1,42 +1,70 @@
-import { Link } from "react-router-dom";
+
+
+//MUI
+
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
+import AdbIcon from '@mui/icons-material/Adb';
+
 import { Modal } from "./Modal";
 import { useAuth } from "../Hooks";
 import Login from "../pages/auth/Login";
 import Signup from "../pages/auth/Signup";
+
+const pages: Array<string> = ['Products', 'Blog'];
+
+
 type HeaderProps = {}
 
 export const Header: React.FC<HeaderProps> = () => {
     const { isLoginModal, onLoginModalToggle, onHandleChange, user, onLogin, switchAuthMode, isLogin, onSignup } = useAuth()
+
     return (
         <>
-            <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-                <div className="container-fluid">
-                    <a className="navbar-brand" href="/#">Navbar</a>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                    </button>
-                    <div className="collapse navbar-collapse" id="navbarNav">
-                        <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <Link to={'/'}>Home</Link>
-                            </li>
-                        </ul>
-                        <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                <button className="btn btn-primary" onClick={onLoginModalToggle}>Login</button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
+            <AppBar position="static">
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters>
+                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="a"
+                            href="/"
+                            sx={{
+                                mr: 2,
+                                display: { xs: 'none', md: 'flex' },
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            LOGO
+                        </Typography>
+                        <Box sx={{ flexGrow: 1, display: 'flex' }}>
+                            {pages.map((page) => (
+                                <Button
+                                    key={page}
+                                    sx={{ my: 2, color: 'white', display: 'block' }}
+                                >
+                                    {page}
+                                </Button>
+                            ))}
+                        </Box>
+
+                        <Button color="inherit" onClick={onLoginModalToggle}>Login</Button>
+                    </Toolbar>
+                </Container>
+            </AppBar>
             <Modal
                 title={isLogin ? 'Login' : 'Register'}
                 onCancel={onLoginModalToggle}
                 open={isLoginModal}
-                cancelText={'Cancel'}
-                submitText={'Save changes'}
-                isHeader={true}
-                isFooter={false}
             >
                 {
                     isLogin ?

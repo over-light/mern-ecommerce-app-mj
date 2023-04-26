@@ -31,7 +31,7 @@ export const login = createAsyncThunk('login', async (user: { email: string, pas
         return await axiosInstance.post('auth/login', user);
     }
     catch (err) {
-        return Promise.reject(err?.message);
+        return Promise.reject(err);
     }
 })
 
