@@ -5,7 +5,7 @@ const userControllers = require('./auth.controller');
 const router = express.Router();
 
 // Create new account
-router.post('/auth/signup', [
+router.post('/signup', [
   [
     check('name')
       .not()
@@ -21,5 +21,7 @@ router.post('/auth/signup', [
 ], userControllers.signup);
 
 router.get('/verify-user/:id/verify/:token', userControllers.verifyUser);
-router.post('/auth/login', userControllers.login);
+router.post('/forgot-password', userControllers.forgotPassword);
+router.post('/login', userControllers.login);
+router.post('/update-password', userControllers.updatePassword);
 module.exports = router;

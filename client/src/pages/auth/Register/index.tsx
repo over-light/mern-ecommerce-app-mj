@@ -1,17 +1,16 @@
 
-import { Button, TextField, Typography, Alert } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 
-type SignupProps = {
-    switchAuthMode: any;
+type RegisterProps = {
+    onChangeScreen: (screen: string) => void;
     registerFormik: any;
-    auth: any
+
 }
 
-const Signup: React.FC<SignupProps> = ({ switchAuthMode, registerFormik, auth }) => {
+const Register: React.FC<RegisterProps> = ({ onChangeScreen, registerFormik }) => {
     const { dirty, isValid, values, errors, touched, handleChange, handleSubmit } = registerFormik;
     return (
         <form onSubmit={handleSubmit}>
-            {auth?.error && <Alert severity="error">{auth?.error}</Alert>}
             <Typography mt={2}>
                 <TextField
                     fullWidth
@@ -78,7 +77,7 @@ const Signup: React.FC<SignupProps> = ({ switchAuthMode, registerFormik, auth })
                 />
             </Typography>
             <Typography mt={2} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <p>Don't have an Account? <Button sx={{ padding: 0 }} variant="text" onClick={switchAuthMode}>Login Now!</Button></p>
+                <p>Don't have an Account? <Button sx={{ padding: 0 }} variant="text" onClick={() => { onChangeScreen('login') }}>Login Now!</Button></p>
 
             </Typography>
             <Typography mt={2} sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -88,5 +87,4 @@ const Signup: React.FC<SignupProps> = ({ switchAuthMode, registerFormik, auth })
     );
 }
 
-
-export default Signup;
+export default Register;

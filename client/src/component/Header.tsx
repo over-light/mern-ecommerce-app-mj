@@ -14,8 +14,9 @@ import Chip from '@mui/material/Chip';
 
 import { Modal } from "./Modal";
 import { useAuth } from "../Hooks";
-import Login from "../pages/auth/Login";
-import Signup from "../pages/auth/Signup";
+import Login from '../pages/auth/Login';
+import Register from '../pages/auth/Register';
+import ForgotPassword from '../pages/auth/ForgotPassword';
 
 
 const pages: Array<string> = ['Products', 'Blog'];
@@ -23,8 +24,22 @@ const pages: Array<string> = ['Products', 'Blog'];
 type HeaderProps = {}
 
 export const Header: React.FC<HeaderProps> = () => {
-    const { isLoginModal, onLoginModalToggle, switchAuthMode, isLogin, loginFormik, registerFormik, auth } = useAuth();
+    const { isLoginModal, onLoginModalToggle, loginFormik, registerFormik, forgotPasswordFormik, auth, authScreen, onChangeScreen } = useAuth();
     const firstLetter = auth?.auth?.name?.split("")?.[0]?.toUpperCase() || "";
+
+    const renderAuthScreen = () => {
+        switch (authScreen) {
+            case 'login':
+                return <Login loginFormik={loginFormik} onChangeScreen={onChangeScreen} />
+            case 'register':
+                return <Register registerFormik={registerFormik} onChangeScreen={onChangeScreen} />
+            case 'forgot':
+                return <ForgotPassword onChangeScreen={onChangeScreen} forgotPasswordFormik={forgotPasswordFormik} />
+            default:
+                break;
+        }
+    }
+
     return (
         <>
             <AppBar position="static">
@@ -67,15 +82,13 @@ export const Header: React.FC<HeaderProps> = () => {
                 </Container>
             </AppBar>
             <Modal
-                title={isLogin ? 'Login' : 'Register'}
+                title={authScreen}
                 onCancel={onLoginModalToggle}
                 open={isLoginModal}
                 maxWidth="xs"
             >
                 {
-                    isLogin ?
-                        <Login auth={auth} loginFormik={loginFormik} switchAuthMode={switchAuthMode} /> :
-                        <Signup auth={auth} registerFormik={registerFormik} switchAuthMode={switchAuthMode} />
+                    renderAuthScreen()
                 }
 
             </Modal>
