@@ -4,20 +4,20 @@ const userControllers = require('./auth.controller');
 
 const router = express.Router();
 
-//Create new account 
+// Create new account
 router.post('/auth/signup', [
-    [
-        check('name')
-            .not()
-            .isEmpty(),
-        check('email')
-            .normalizeEmail()
-            .isEmail(),
-        check('password').isLength({ min: 6 }),
-        check('mobile').not()
-            .isEmpty()
-            .isLength({ min: 10, max: 13 }),
-    ],
+  [
+    check('name')
+      .not()
+      .isEmpty(),
+    check('email')
+      .normalizeEmail()
+      .isEmail(),
+    check('password').isLength({ min: 6 }),
+    check('mobile').not()
+      .isEmpty()
+      .isLength({ min: 10, max: 13 }),
+  ],
 ], userControllers.signup);
 
 router.get('/verify-user/:id/verify/:token', userControllers.verifyUser);

@@ -1,30 +1,28 @@
-const nodemailer = require("nodemailer");
-const dotenv = require('dotenv').config();
+const nodemailer = require('nodemailer');
+const { EMAIL_USERNAME, EMAIL_PASSWORD, EMAIL_SERVICE } = require('../config/env');
+
 module.exports = async (to, subject, text, html) => {
-    try {
-        const transporter = nodemailer.createTransport({
-            service: process.env.EMAIL_SERVICE,
-            auth: {
-                user: process.env.EMAIL_USERNAME,
-                pass: process.env.EMAIL_PASSWORD
-            },
-        });
-        const options = {
-            from: process.env.EMAIL_USERNAME,
-            to: to,
-            subject: subject,
-            text: text,
-            html: html
-        }
+  try {
+    const transporter = nodemailer.createTransport({
+      service: EMAIL_SERVICE,
+      auth: {
+        user: EMAIL_USERNAME,
+        pass: EMAIL_PASSWORD,
+      },
+    });
+    const options = {
+      from: EMAIL_PASSWORD,
+      to,
+      subject,
+      text,
+      html,
+    };
 
-        transporter.sendMail(options, (error, info) => {
-            if (error) console.log("email not sent!");
-            else console.log("email sent successfully");
-        })
-
-    } catch (error) {
-        console.log("email not sent!");
-        console.log(error);
-        return error;
-    }
+    return transporter.sendMail(options, (error) => {
+      if (error) console.log('email not sent!');
+      else console.log('email sent successfully');
+    });
+  } catch (error) {
+    return error;
+  }
 };

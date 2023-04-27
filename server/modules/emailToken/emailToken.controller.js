@@ -1,23 +1,25 @@
-const emailToken = require('./emailToken.services');
 const crypto = require('crypto');
-
+const emailToken = require('./emailToken.services');
 
 exports.createToken = async (user) => {
-    //Create new Token
-    return await emailToken?.createToken({
-        userId: user._id,
-        token: crypto.randomBytes(32).toString("hex"),
-    })
-}
+  const result = await emailToken?.createToken({
+    userId: user._id,
+    token: crypto.randomBytes(32).toString('hex'),
+  });
+  return result;
+};
 
 exports.findToken = async (user) => {
-    //Create new Token
-    return await emailToken?.findToken(user)
-}
+  // Create new Token
+  const result = await emailToken?.findToken(user);
+  return result;
+};
 
 exports.deleteToken = async (token) => {
-    return await emailToken?.deleteToken(token)
-}
+  const result = await emailToken?.deleteToken(token);
+  return result;
+};
 exports.updateOne = async (token) => {
-    return await emailToken?.updateOne(token)
-}
+  const result = await emailToken?.updateOne(token);
+  return result;
+};
