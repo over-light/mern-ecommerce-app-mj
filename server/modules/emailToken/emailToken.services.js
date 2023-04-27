@@ -1,15 +1,16 @@
-const EmailModel = require("./emailToken.model");
+const EmailModel = require('./emailToken.model');
 
-exports.createToken = async (token) => {
-    return await EmailModel.create(token);
-};
+exports.createToken = async (token) => EmailModel.create(token);
 
 exports.findToken = async (token) => {
-    return await EmailModel.findOne(token);
+    const result = await EmailModel.findOne(token);
+    return result;
 };
 exports.deleteToken = async (data) => {
-    return await EmailModel.deleteOne(data);
+    const result = await EmailModel.deleteOne(data);
+    return result;
 };
 exports.updateOne = async (data) => {
-    return await EmailModel.updateOne(data);
+    const result = await EmailModel.updateOne(data);
+    return result;
 };

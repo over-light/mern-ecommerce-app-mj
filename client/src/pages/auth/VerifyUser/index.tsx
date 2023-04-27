@@ -8,6 +8,7 @@ const VerifyUser: React.FC<VerifyUserProps> = () => {
     const { verifyUser } = useAuth()
     const params = useParams()
     useEffect(() => {
+        alert()
         const { token, id } = params;
         verifyUser(token, id)
 

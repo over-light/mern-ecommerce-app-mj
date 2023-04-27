@@ -13,7 +13,7 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/verify-user/:id/verify/:token" element={<VerifyUser />} />
+        <Route path="/user/:id/verify/:token" element={<VerifyUser />} />
       </Routes>
     </BrowserRouter>
   );
