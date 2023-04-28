@@ -1,21 +1,22 @@
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import { useAuth } from "../../../Hooks";
+import { useEffect } from 'react';
 
 type VerifyUserProps = {}
 
 const VerifyUser: React.FC<VerifyUserProps> = () => {
-    const { verifyUser } = useAuth()
-    const params = useParams()
-    useEffect(() => {
-        alert()
-        const { token, id } = params;
-        verifyUser(token, id)
+    const { userVerify } = useAuth();
 
+    useEffect(() => {
+        userVerify()
     }, [])
     return (
-        <div>
-            VerifyUser
+        <div className='centerDiv'>
+            <div className='overlay'></div>
+            <Box sx={{ display: 'flex' }}>
+                <CircularProgress />
+            </Box>
         </div>
     );
 }

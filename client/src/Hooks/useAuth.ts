@@ -1,17 +1,31 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from 'formik';
-import axiosInstance from '../utils/axiosInstance';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from '../store/hooks'
-import { signup, login, revertAll } from '../store/reducers/authSlice'
-import { LoginSchema, RegisterSchema } from "../utils/validationScheme/Schema";
+import { signup, login, revertAll, forgotPassword, updatePassword, verifyUser, } from '../store/reducers/authSlice'
+import { handleSnackbar } from '../store/reducers/snackbarSlice'
+import { LoginSchema, RegisterSchema, forgotSchema, updatePasswordSchema } from "../utils/validationScheme/Schema";
+
 
 
 export const useAuth = () => {
     const navigate = useNavigate();
     const auth = useAppSelector(state => state.auth);
+
     const dispatch = useAppDispatch();
+    const params = useParams();
+
+    //Local State
+    const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
+    const [authScreen, setAuthScreen] = useState<string>('login')
+
+    const onChangeScreen = (screen: string) => {
+        setAuthScreen(screen);
+        dispatch(revertAll());
+        registerFormik?.resetForm();
+        loginFormik?.resetForm();
+    }
 
     //Login Validation 
     const loginFormik = useFormik({
@@ -20,14 +34,21 @@ export const useAuth = () => {
             password: '',
         },
         validationSchema: LoginSchema,
-        onSubmit: values => {
-            dispatch(login({
+        onSubmit: async (values) => {
+            const response = await dispatch(login({
                 user: {
                     email: values?.email,
                     password: values.password
                 },
                 cb: onLoginModalToggle
             }))
+            if (response?.meta?.requestStatus === 'fulfilled') {
+                dispatch(handleSnackbar({ open: true, message: response?.payload?.message, type: 'success' }))
+            }
+            if (response?.meta?.requestStatus === 'rejected') {
+                // @ts-ignore: Unreachable code error
+                dispatch(handleSnackbar({ open: true, message: response?.error?.message, type: 'error' }))
+            }
         },
     });
     //Register Validation
@@ -40,55 +61,105 @@ export const useAuth = () => {
             mobile: '',
         },
         validationSchema: RegisterSchema,
-        onSubmit: values => {
-            dispatch(signup({
+        onSubmit: async (values) => {
+            const response = await dispatch(signup({
                 user: {
                     email: values?.email,
                     password: values.password,
                     name: values.name,
                     mobile: values.mobile,
-                }, cb: switchAuthMode
+                }, cb: onChangeScreen
             }));
+            if (response?.meta?.requestStatus === 'fulfilled') {
+                dispatch(handleSnackbar({ open: true, message: response?.payload?.message, type: 'success' }))
+            }
+            if (response?.meta?.requestStatus === 'rejected') {
+                // @ts-ignore: Unreachable code error
+                dispatch(handleSnackbar({ open: true, message: response?.error?.message, type: 'error' }))
+            }
+        },
+    });
+    //Forgot Password Formik
+    const forgotPasswordFormik = useFormik({
+        initialValues: {
+            email: '',
+        },
+        validationSchema: forgotSchema,
+        onSubmit: async (values) => {
+            console.log("values::::>", values)
+            const response = await dispatch(forgotPassword({
+                email: values?.email,
+                cb: onChangeScreen
+            }));
+            if (response?.meta?.requestStatus === 'fulfilled') {
+                dispatch(handleSnackbar({ open: true, message: response?.payload?.message, type: 'success' }))
+            }
+            if (response?.meta?.requestStatus === 'rejected') {
+                // @ts-ignore: Unreachable code error
+                dispatch(handleSnackbar({ open: true, message: response?.error?.message, type: 'error' }))
+            }
         },
     });
 
-    //Local State
-    const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
+    //Update Password
+    const updatePasswordFormik = useFormik({
+        initialValues: {
+            password: '',
+            retypePassword: ''
+        },
+        validationSchema: updatePasswordSchema,
+        onSubmit: async (values) => {
+            const { id, token } = params;
 
-    const [isLogin, setIsLogin] = useState<boolean>(true)
+            const response = await dispatch(updatePassword({
+                user: {
+                    password: values?.password,
+                    userId: id,
+                    token: token
+                }
+
+            }));
+            if (response?.meta?.requestStatus === 'fulfilled') {
+                dispatch(handleSnackbar({ open: true, message: response?.payload?.message, type: 'success' }));
+                navigate('/')
+            }
+            if (response?.meta?.requestStatus === 'rejected') {
+                // @ts-ignore: Unreachable code error
+                dispatch(handleSnackbar({ open: true, message: response?.error?.message, type: 'error' }))
+            }
+        },
+    });
 
     const onLoginModalToggle = () => {
         setIsLoginModal(!isLoginModal);
-        dispatch(revertAll());
-        registerFormik?.resetForm();
-        loginFormik?.resetForm();
     }
-
-    const switchAuthMode = () => {
-        setIsLogin(!isLogin);
-        dispatch(revertAll());
-        registerFormik?.resetForm();
-        loginFormik?.resetForm();
-    };
-
-    const verifyUser = async (token: string | undefined, id: string | undefined) => {
-        try {
-            await axiosInstance.get(`/verify-user/${id}/verify/${token}`);
+    const userVerify = async () => {
+        const { id, token } = params;
+        if (id && token) {
+            const response = await dispatch(verifyUser({ id: id, token: token }));
+            if (response?.meta?.requestStatus === 'fulfilled') {
+                dispatch(handleSnackbar({ open: true, message: response?.payload?.message, type: 'success' }));
+            }
+            if (response?.meta?.requestStatus === 'rejected') {
+                // @ts-ignore: Unreachable code error
+                dispatch(handleSnackbar({ open: true, message: response?.error?.message, type: 'error' }));
+            }
             navigate('/')
         }
-        catch (err) {
-            console.log(err);
-        }
     }
+
+
 
     return {
         isLoginModal,
         onLoginModalToggle,
-        switchAuthMode,
-        isLogin,
-        verifyUser,
+        onChangeScreen,
         loginFormik,
         registerFormik,
-        auth
+        updatePasswordFormik,
+        forgotPasswordFormik,
+        auth,
+        authScreen,
+        userVerify
     };
 };

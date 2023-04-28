@@ -32,7 +32,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
                 maxWidth={maxWidth}>
                 <DialogTitle >
                     <Box display="flex" alignItems="center">
-                        <Box flexGrow={1}>{title}</Box>
+                        <Box flexGrow={1}>{title?.toLocaleUpperCase()}</Box>
                         <Box>
                             <IconButton onClick={onCancel}>
                                 <CloseIcon />
