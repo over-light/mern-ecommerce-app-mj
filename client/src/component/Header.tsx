@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = () => {
     const renderAuthScreen = () => {
         switch (authScreen) {
             case 'login':
-                return <Login loginFormik={loginFormik} onChangeScreen={onChangeScreen} />
+                return <Login auth={auth} loginFormik={loginFormik} onChangeScreen={onChangeScreen} />
             case 'register':
                 return <Register registerFormik={registerFormik} onChangeScreen={onChangeScreen} />
             case 'forgot':

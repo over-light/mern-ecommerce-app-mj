@@ -1,8 +1,7 @@
-import { createSlice, createAsyncThunk, PayloadAction, createAction, isRejectedWithValue } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction, createAction } from '@reduxjs/toolkit'
 import axiosInstance from '../../utils/axiosInstance';
 import { userInterface } from '../../type/interface';
 import { getErrorMessage } from '../../utils/commonFunction';
-import { AxiosError } from 'axios';
 
 
 type InitialState = {
@@ -17,10 +16,9 @@ const initialState: InitialState = {
     error: ''
 }
 // Generates pending, fulfilled and rejected action types
-export const signup = createAsyncThunk('signup', async ({ user, cb }: { user: userInterface, cb: any }) => {
+export const signup = createAsyncThunk('signup', async ({ user }: { user: userInterface }) => {
     try {
         const response = await axiosInstance.post('auth/signup', user);
-        cb('login');
         return response?.data
     }
     catch (err) {
@@ -40,12 +38,9 @@ export const verifyUser = createAsyncThunk('verifyUser', async ({ id, token }: {
     }
 })
 // Generates pending, fulfilled and rejected action types
-export const login = createAsyncThunk('login', async ({ user, cb }: { user: { email: string, password: string }, cb: any }) => {
+export const login = createAsyncThunk('login', async ({ user }: { user: { email: string, password: string } }) => {
     try {
         const response = await axiosInstance.post('auth/login', user);
-        cb();
-        sessionStorage.setItem('user', JSON.stringify(response?.data));
-
         return response?.data
     }
     catch (err) {
@@ -54,10 +49,9 @@ export const login = createAsyncThunk('login', async ({ user, cb }: { user: { em
     }
 })
 // Generates pending, fulfilled and rejected action types
-export const forgotPassword = createAsyncThunk('forgotPassword', async ({ email, cb }: { email: string, cb: any }) => {
+export const forgotPassword = createAsyncThunk('forgotPassword', async ({ email }: { email: string }) => {
     try {
         const response = await axiosInstance.post('auth/forgot-password', { email });
-        cb('login')
         return response?.data
     }
     catch (err) {

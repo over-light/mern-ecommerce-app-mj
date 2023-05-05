@@ -4,12 +4,13 @@ import { Button, TextField, Typography } from "@mui/material";
 type LoginProps = {
     onChangeScreen: (screen: string) => void;
     loginFormik: any;
-
+    auth: any
 }
 
 const Login: React.FC<LoginProps> = ({
     onChangeScreen,
     loginFormik,
+    auth
 }) => {
     const { dirty, isValid, values, errors, touched, handleChange, handleSubmit, } = loginFormik;
 
@@ -43,11 +44,11 @@ const Login: React.FC<LoginProps> = ({
                 />
             </Typography>
             <Typography mt={2} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button sx={{ padding: '0' }} variant="text" color="primary" onClick={() => { onChangeScreen('register') }}>Register</Button>
-                <Button sx={{ padding: '0' }} variant="text" color="secondary" onClick={() => { onChangeScreen('forgot') }}>Forgot</Button>
+                <Button disabled={(!isValid && dirty) || auth.loading} sx={{ padding: '0' }} variant="text" color="primary" onClick={() => { onChangeScreen('register') }}>Register</Button>
+                <Button disabled={(!isValid && dirty) || auth.loading} sx={{ padding: '0' }} variant="text" color="secondary" onClick={() => { onChangeScreen('forgot') }}>Forgot</Button>
             </Typography>
             <Typography mt={2} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Button disabled={!isValid && dirty} type="submit" variant="contained" color="primary">Login</Button>
+                <Button disabled={(!isValid && dirty) || auth.loading} type="submit" variant="contained" color="primary">Login</Button>
             </Typography>
         </form>
     );

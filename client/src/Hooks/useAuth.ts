@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormik } from 'formik';
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from '../store/hooks'
@@ -39,10 +39,10 @@ export const useAuth = () => {
                 user: {
                     email: values?.email,
                     password: values.password
-                },
-                cb: onLoginModalToggle
+                }
             }))
             if (response?.meta?.requestStatus === 'fulfilled') {
+                onLoginModalToggle()
                 dispatch(handleSnackbar({ open: true, message: response?.payload?.message, type: 'success' }))
             }
             if (response?.meta?.requestStatus === 'rejected') {
@@ -68,10 +68,11 @@ export const useAuth = () => {
                     password: values.password,
                     name: values.name,
                     mobile: values.mobile,
-                }, cb: onChangeScreen
+                }
             }));
             if (response?.meta?.requestStatus === 'fulfilled') {
-                dispatch(handleSnackbar({ open: true, message: response?.payload?.message, type: 'success' }))
+                dispatch(handleSnackbar({ open: true, message: response?.payload?.message, type: 'success' }));
+                onChangeScreen('login')
             }
             if (response?.meta?.requestStatus === 'rejected') {
                 // @ts-ignore: Unreachable code error
@@ -86,13 +87,12 @@ export const useAuth = () => {
         },
         validationSchema: forgotSchema,
         onSubmit: async (values) => {
-            console.log("values::::>", values)
             const response = await dispatch(forgotPassword({
-                email: values?.email,
-                cb: onChangeScreen
+                email: values?.email
             }));
             if (response?.meta?.requestStatus === 'fulfilled') {
-                dispatch(handleSnackbar({ open: true, message: response?.payload?.message, type: 'success' }))
+                dispatch(handleSnackbar({ open: true, message: response?.payload?.message, type: 'success' }));
+                onChangeScreen('login')
             }
             if (response?.meta?.requestStatus === 'rejected') {
                 // @ts-ignore: Unreachable code error
