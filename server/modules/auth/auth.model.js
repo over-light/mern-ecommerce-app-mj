@@ -12,10 +12,10 @@ const userSchema = new Schema({
   mobile: { type: Number, required: true, minlength: 10 },
   isActive: { type: Boolean, required: false },
   isAdmin: { type: Boolean, required: false },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  __v: { type: Number, select: false }
+}, {
+  timestamps: true,
+}
+);
 
 module.exports = mongoose.model('User', userSchema);
