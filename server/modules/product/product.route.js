@@ -9,8 +9,6 @@ const router = express.Router();
 // Get userId if user is loggedIn
 router.use(checkUser);
 
-router.get('/', productControllers.getAllProducts);
-
 // Add new product
 router.post('/',
     fileUpload.single('image'),
@@ -26,5 +24,6 @@ router.post('/',
             .isEmpty(),
     ], checkAuth, productControllers.addProduct);
 
+router.get('/', checkAuth, productControllers.getAllProducts);
 router.delete('/:pid', checkAuth, productControllers.deleteProducts);
 module.exports = router;

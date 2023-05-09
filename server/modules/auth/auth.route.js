@@ -23,5 +23,6 @@ router.post('/signup', [
 router.get('/verify-user/:id/verify/:token', userControllers.verifyUser);
 router.post('/forgot-password', userControllers.forgotPassword);
 router.post('/login', userControllers.login);
+router.post('/refresh-token', userControllers.refreshToken);
 router.post('/update-password', userControllers.updatePassword);
 module.exports = router;

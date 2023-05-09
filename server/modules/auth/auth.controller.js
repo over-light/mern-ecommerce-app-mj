@@ -141,7 +141,8 @@ exports.login = async (req, res) => {
         token = jwt.sign(
             tokenUser,
             TOKEN_KEY,
-            { expiresIn: '1h' },
+            { expiresIn: '6m' },
+
         );
     } catch (err) {
         return res.status(500).json({ message: messageString?.loginFailedAgain });
@@ -149,7 +150,14 @@ exports.login = async (req, res) => {
 
     let refreshToken;
     try {
-        refreshToken = jwt.sign({ userId: existingUser.id, email: existingUser.email, username: existingUser.username }, 'check_refresh', { expiresIn: REFRESH_TOKEN_EXPIRED });
+        refreshToken = jwt.sign(
+            {
+                userId: existingUser.id,
+                email: existingUser.email,
+                username: existingUser.username
+            },
+            'check_refresh',
+            { expiresIn: REFRESH_TOKEN_EXPIRED });
     } catch (err) {
         return res.status(500).json({ message: messageString?.loginFailed });
     }
@@ -248,5 +256,58 @@ exports.updatePassword = async (req, res) => {
     await sendEmail(existingUser.email, messageString?.successPassword, '', emailTemplate.accountActivated(messageString?.successPassword));
     return res.status(200).json({ message: messageString?.successPassword });
 
+};
+
+//
+// eslint-disable-next-line consistent-return
+exports.refreshToken = async (req, res) => {
+    const { refreshToken } = req.body;
+    let newToken;
+    let decodedToken;
+
+    if (refreshToken) {
+        try {
+            decodedToken = jwt.verify(refreshToken, 'check_refresh');
+
+            const tokenUser = {
+                userId: decodedToken.userId,
+                email: decodedToken.email
+            };
+            newToken = jwt.sign(
+                tokenUser,
+                TOKEN_KEY,
+                { expiresIn: '6m' }
+            );
+        }
+        catch (err) {
+            return res.status(500).json({ message: messageString?.somethingWrong });
+        }
+    }
+    else {
+
+        return res.status(500).json({ message: messageString?.somethingWrong });
+    }
+    let existingUser;
+    try {
+        existingUser = await AuthService.getByField({ email: decodedToken.email });
+    }
+    catch (err) {
+
+        return res.status(500).json({ message: messageString?.somethingWrong });
+    }
+    res.status(201).json({
+        user: {
+            userId: existingUser.id,
+            name: existingUser.name,
+            description: existingUser.description,
+            email: existingUser.email,
+            image: existingUser.image,
+            mobile: existingUser.mobile,
+            isAdmin: existingUser.isAdmin,
+            refreshToken,
+            token: newToken,
+        },
+        message: messageString.loginSuccess
+    });
 
 };

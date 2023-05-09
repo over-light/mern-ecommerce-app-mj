@@ -28,10 +28,10 @@ app.get('/', (_req, res) => {
 app.use('/api/v1/product', productRoute);
 app.use('/api/v1/auth', authRoute);
 
-app.use(() => {
-    const error = new HttpError('Could not find this route', 404);
-    throw error;
-});
+// app.use(() => {
+//     const error = new HttpError('Could not find this route', 404);
+//     throw error;
+// });
 
 app.listen(SERVER_PORT, () => {
     console.log(`⚡️[server]: Server is running at ${IS_DEVELOPMENT ? 'http://localhost:' : ''}${SERVER_PORT}`);
