@@ -4,7 +4,9 @@ const path = require('path');
 
 const authRoute = require('./modules/auth/auth.route');
 const productRoute = require('./modules/product/product.route');
-const HttpError = require('./models/http-error');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
+
 require('./config/db');
 const { SERVER_PORT, IS_DEVELOPMENT } = require('./config/env');
 
@@ -24,7 +26,7 @@ app.get('/', (_req, res) => {
         message: 'Server is running',
     });
 });
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/v1/product', productRoute);
 app.use('/api/v1/auth', authRoute);
 
