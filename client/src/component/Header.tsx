@@ -17,16 +17,19 @@ import { useAuth } from "../Hooks";
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import ForgotPassword from '../pages/auth/ForgotPassword';
-
-
-const pages: Array<string> = ['Products', 'Blog'];
+import { Link } from 'react-router-dom';
 
 type HeaderProps = {}
 
 export const Header: React.FC<HeaderProps> = () => {
     const { isLoginModal, onLoginModalToggle, loginFormik, registerFormik, forgotPasswordFormik, auth, authScreen, onChangeScreen } = useAuth();
     const firstLetter = auth?.auth?.name?.split("")?.[0]?.toUpperCase() || "";
-
+    const user: any = document!.cookie
+    .split("; ")
+    .find((row) => row.startsWith("user="))
+    ?.split("=")[1];
+    // console.log("user",JSON.parse(user))
+    const authUser=user?JSON.parse(user):undefined;
     const renderAuthScreen = () => {
         switch (authScreen) {
             case 'login':
@@ -64,18 +67,13 @@ export const Header: React.FC<HeaderProps> = () => {
                             LOGO
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: 'flex' }}>
-                            {pages.map((page) => (
-                                <Button
-                                    key={page}
-                                    sx={{ my: 2, color: 'white', display: 'block' }}
-                                >
-                                    {page}
-                                </Button>
-                            ))}
+                        <Link to="/" className='nav-item'>Home</Link>
+                        <Link to="/product" className='nav-item'>Product</Link>
+                      
                         </Box>
 
-                        {auth?.auth?.token ? (
-                            <Chip sx={{ cursor: 'pointer' }} avatar={<Avatar>{firstLetter}</Avatar>} color='secondary' label={auth?.auth?.name} />
+                        {authUser ? (
+                            <Chip sx={{ cursor: 'pointer' }} avatar={<Avatar>{firstLetter}</Avatar>} color='secondary' label={authUser?.name} />
                         ) :
                             <Button color="inherit" onClick={onLoginModalToggle}>Login</Button>}
                     </Toolbar>
