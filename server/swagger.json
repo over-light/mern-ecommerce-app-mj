@@ -1,238 +1,391 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "version": "1.0.0",
-        "title": "API"
-    },
-    "basePath": "/api/v1",
-    "tags": [
-        "Authentication",
-        "Product"
-    ],
-    "schemes": [
-        "http",
-        "https"
-    ],
-    "consumes": [
-        "application/json",
-        "multipart/form-data",
-        "application/x-www-form-urlencoded"
-    ],
-    "produces": [
-        "application/json",
-        "multipart/form-data",
-        "application/x-www-form-urlencoded"
-    ],
-    "paths": {
-        "/auth/signup": {
-            "post": {
-                "tags": [
-                    "Authentication"
-                ],
-                "description": "Create new user in system",
-                "parameters": [
-                    {
-                        "name": "signup",
-                        "in": "body",
-                        "description": "User that we want to create",
-                        "schema": {
-                            "$ref": "#/definitions/UserSignup"
-                        }
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "New user is created",
-                        "schema": {
-                            "$ref": "#/definitions/UserSignup"
-                        }
-                    }
-                }
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API"
+  },
+  "basePath": "/api/v1",
+  "tags": ["Authentication", "Product"],
+  "schemes": ["http", "https"],
+  "consumes": ["application/json", "multipart/form-data", "application/x-www-form-urlencoded"],
+  "produces": ["application/json", "multipart/form-data", "application/x-www-form-urlencoded"],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "Create new user in system",
+        "parameters": [
+          {
+            "name": "signup",
+            "in": "body",
+            "description": "User that we want to create",
+            "schema": {
+              "$ref": "#/definitions/UserSignup"
             }
-        },
-        "/auth/login": {
-            "post": {
-                "tags": [
-                    "Authentication"
-                ],
-                "description": "Signin user in system",
-                "parameters": [
-                    {
-                        "name": "login",
-                        "in": "body",
-                        "description": "User that we want to signin",
-                        "schema": {
-                            "$ref": "#/definitions/UserLogin"
-                        }
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Signin successfully",
-                        "schema": {
-                            "$ref": "#/definitions/UserLogin"
-                        }
-                    }
-                }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "New user is created",
+            "schema": {
+              "$ref": "#/definitions/UserSignup"
             }
-        },
-        "/product/": {
-            "post": {
-                "tags": [
-                    "Product"
-                ],
-                "consumes": "multipart/form-data",
-                "description": "Create a new product",
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "formData",
-                        "type": "string",
-                        "description": "Product name",
-                        "schema": {
-                            "$ref": "#/definitions/Product"
-                        }
-                    },
-                    {
-                        "name": "description",
-                        "in": "formData",
-                        "type": "string",
-                        "description": "Product description",
-                        "schema": {
-                            "$ref": "#/definitions/Product"
-                        }
-                    },
-                    {
-                        "name": "price",
-                        "in": "formData",
-                        "type": "string",
-                        "description": "Product price",
-                        "schema": {
-                            "$ref": "#/definitions/Product"
-                        }
-                    },
-                    {
-                        "name": "image",
-                        "in": "formData",
-                        "type": "file",
-                        "description": "Product image",
-                        "schema": {
-                            "$ref": "#/definitions/Product"
-                        }
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "responses": {
-                    "200": {}
-                }
-            }
-        },
-        "/product": {
-            "get": {
-                "tags": [
-                    "Product"
-                ],
-                "description": "Get List of product",
-                "parameters": [],
-                "produces": [
-                    "application/json"
-                ],
-                "responses": {
-                    "200": {}
-                }
-            }
+          }
         }
+      }
     },
-    "definitions": {
-        "UserSignup": {
-            "required": [
-                "name",
-                "email",
-                "password",
-                "mobile"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "required": true
-                },
-                "email": {
-                    "type": "string",
-                    "required": true
-                },
-                "password": {
-                    "type": "string",
-                    "required": true
-                },
-                "mobile": {
-                    "type": "string",
-                    "required": true
-                }
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "Signin user in system",
+        "parameters": [
+          {
+            "name": "login",
+            "in": "body",
+            "description": "User that we want to signin",
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
             }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Signin successfully",
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        }
+      }
+    },
+    "/product": {
+      "post": {
+        "tags": ["Product"],
+        "consumes": "multipart/form-data",
+        "description": "Create a new product",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "type": "string",
+            "description": "Product name",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "type": "string",
+            "description": "Product description",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "type": "string",
+            "description": "Product price",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "type": "file",
+            "description": "Product image",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {}
+        }
+      },
+      "get": {
+        "tags": ["Product"],
+        "description": "Get List of product",
+        "parameters": [],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/product/{pid}": {
+      "get": {
+        "tags": ["Product"],
+        "description": "Get single product",
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "path",
+            "required": false,
+            "description": "ID of user that we want to find",
+            "type": "string"
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {}
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "path",
+            "required": false,
+            "description": "ID of user that we want to find and update",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": false,
+            "description": "name of product that we want to update",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "path",
+            "required": false,
+            "description": "Description of product that we want to update",
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "in": "path",
+            "required": false,
+            "description": "Price of product that we want to update",
+            "type": "string"
+          }
+        ],
+        "tags": ["Product"],
+        "description": "Update product",
+
+        "produces": ["application/json"],
+        "responses": {
+          "200": {}
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "path",
+            "required": false,
+            "description": "ID of user that we want to find",
+            "type": "string"
+          }
+        ],
+        "tags": ["Product"],
+        "description": "Delete product",
+
+        "produces": ["application/json"],
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/category": {
+      "post": {
+        "tags": ["Category"],
+        "consumes": "multipart/form-data",
+        "description": "Create a new category",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "type": "string",
+            "description": "Category name",
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "type": "string",
+            "description": "Category description",
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {}
+        }
+      },
+      "get": {
+        "tags": ["Category"],
+        "description": "Get List of Category",
+        "parameters": [],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/category/{pid}": {
+      "get": {
+        "tags": ["Category"],
+        "description": "Get Single category",
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "path",
+            "required": false,
+            "description": "ID of user that we want to find",
+            "type": "string"
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {}
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "path",
+            "required": false,
+            "description": "ID of user that we want to find and update",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": false,
+            "description": "Name of category that we want to update",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "in": "path",
+            "required": false,
+            "description": "Description of category that we want to update",
+            "type": "string"
+          }
+        ],
+        "tags": ["Category"],
+        "description": "Update a Category",
+
+        "produces": ["application/json"],
+        "responses": {
+          "200": {}
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "path",
+            "required": false,
+            "description": "ID of user that we want to find and delete",
+            "type": "string"
+          }
+        ],
+        "tags": ["Category"],
+        "description": "Delete category",
+
+        "produces": ["application/json"],
+        "responses": {
+          "200": {}
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UserSignup": {
+      "required": ["name", "email", "password", "mobile"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "required": true
         },
-        "UserLogin": {
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "required": true
-                },
-                "password": {
-                    "type": "string",
-                    "required": true
-                }
-            }
+        "email": {
+          "type": "string",
+          "required": true
         },
-        "Product": {
-            "required": [
-                "name",
-                "description",
-                "image",
-                "price"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "required": true
-                },
-                "description": {
-                    "type": "string",
-                    "required": true
-                },
-                "image": {
-                    "type": "string",
-                    "required": true,
-                    "format": "binary"
-                },
-                "price": {
-                    "type": "string",
-                    "required": true
-                }
-            }
+        "password": {
+          "type": "string",
+          "required": true
+        },
+        "mobile": {
+          "type": "string",
+          "required": true
         }
+      }
     },
-    "securityDefinitions": {
-        "token": {
-            "type": "apiKey",
-            "name": "authorization",
-            "description": "Enter the token with the `Bearer: ` prefix, e.g. `Bearer abcde12345` ",
-            "in": "header"
+    "UserLogin": {
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string",
+          "required": true
+        },
+        "password": {
+          "type": "string",
+          "required": true
         }
+      }
     },
-    "security": [
-        {
-            "token": []
+    "Product": {
+      "required": ["name", "description", "image", "price"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "description": {
+          "type": "string",
+          "required": true
+        },
+        "image": {
+          "type": "string",
+          "required": true,
+          "format": "binary"
+        },
+        "price": {
+          "type": "string",
+          "required": true
         }
-    ]
+      }
+    },
+    "Category": {
+      "required": ["name", "description"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "description": {
+          "type": "string",
+          "required": true
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "token": {
+      "type": "apiKey",
+      "name": "authorization",
+      "description": "Enter the token with the `Bearer: ` prefix, e.g. `Bearer abcde12345` ",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "token": []
+    }
+  ]
 }

@@ -8,6 +8,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import ProductList from "./pages/Products/ProductList";
 
 
 
@@ -20,6 +21,8 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/user/:id/verify/:token" element={<VerifyUser />} />
         <Route path="/user/:id/update-password/:token" element={<UpdatePassword />} />
+        <Route path="/product" element={<ProductList />} />
+        
       </Routes>
     </BrowserRouter>
   );

@@ -18,7 +18,7 @@ const initialState: InitialState = {
 // Generates pending, fulfilled and rejected action types
 export const signup = createAsyncThunk('signup', async ({ user }: { user: userInterface }) => {
     try {
-        const response = await axiosInstance.post('auth/signup', user);
+        const response = await axiosInstance.post('auth/signup', user,{withoutAuth:true});
         return response?.data
     }
     catch (err) {
@@ -29,7 +29,7 @@ export const signup = createAsyncThunk('signup', async ({ user }: { user: userIn
 // Generates pending, fulfilled and rejected action types
 export const verifyUser = createAsyncThunk('verifyUser', async ({ id, token }: { id: string | undefined, token: string | undefined }) => {
     try {
-        const response = await axiosInstance.get(`/auth/verify-user/${id}/verify/${token}`);
+        const response = await axiosInstance.get(`/auth/verify-user/${id}/verify/${token}`,{withoutAuth:true});
         return response?.data
     }
     catch (err) {
@@ -40,7 +40,7 @@ export const verifyUser = createAsyncThunk('verifyUser', async ({ id, token }: {
 // Generates pending, fulfilled and rejected action types
 export const login = createAsyncThunk('login', async ({ user }: { user: { email: string, password: string } }) => {
     try {
-        const response = await axiosInstance.post('auth/login', user);
+        const response = await axiosInstance.post('auth/login', user,{withoutAuth:true});
         return response?.data
     }
     catch (err) {
@@ -51,7 +51,7 @@ export const login = createAsyncThunk('login', async ({ user }: { user: { email:
 // Generates pending, fulfilled and rejected action types
 export const forgotPassword = createAsyncThunk('forgotPassword', async ({ email }: { email: string }) => {
     try {
-        const response = await axiosInstance.post('auth/forgot-password', { email });
+        const response = await axiosInstance.post('auth/forgot-password', { email },{withoutAuth:true});
         return response?.data
     }
     catch (err) {
@@ -62,7 +62,7 @@ export const forgotPassword = createAsyncThunk('forgotPassword', async ({ email 
 // Generates pending, fulfilled and rejected action types
 export const updatePassword = createAsyncThunk('updatePassword', async ({ user }: { user: { userId: string | undefined, password: string, token: string | undefined } }) => {
     try {
-        const response = await axiosInstance.post('auth/update-password', user);
+        const response = await axiosInstance.post('auth/update-password', user,{withoutAuth:true});
         return response?.data
     }
     catch (err) {

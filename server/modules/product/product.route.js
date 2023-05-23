@@ -10,20 +10,30 @@ const router = express.Router();
 router.use(checkUser);
 
 // Add new product
-router.post('/',
-    fileUpload.single('image'),
-    [
-        check('name')
-            .not()
-            .isEmpty(),
-        check('description')
-            .not()
-            .isEmpty(),
-        check('price')
-            .not()
-            .isEmpty(),
-    ], checkAuth, productControllers.addProduct);
+router.post(
+  '/',
+  fileUpload.single('image'),
+  [
+    check('name').not().isEmpty(),
+    check('description').not().isEmpty(),
+    check('price').not().isEmpty()
+  ],
+  checkAuth,
+  productControllers.addProduct
+);
 
-router.get('/', checkAuth, productControllers.getAllProducts);
+router.get('/', productControllers.getAllProducts);
+router.get('/:pid', productControllers.getProductByID);
 router.delete('/:pid', checkAuth, productControllers.deleteProducts);
+router.patch(
+  '/:pid',
+  [
+    check('name').not().isEmpty(),
+    check('description').not().isEmpty(),
+    check('price').not().isEmpty(),
+    check('category').not().isEmpty()
+  ],
+  checkAuth,
+  productControllers.updateProducts
+);
 module.exports = router;

@@ -10,6 +10,7 @@ const VerifyUser: React.FC<VerifyUserProps> = () => {
 
     useEffect(() => {
         userVerify()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <div className='centerDiv'>
