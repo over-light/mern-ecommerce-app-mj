@@ -1,4 +1,3 @@
-const cartModel = require('./cart.model');
 const CartModel = require('./cart.model');
 
 exports.getAllCartItem = async () => {
@@ -14,7 +13,7 @@ exports.AddItemOnCart = async (payload) => {
   return result;
 };
 exports.getById = async (id) => {
-  const result = await CartModel.findById(id,'-createdAt -updatedAt').lean();
+  const result = await CartModel.findById(id);
   return result;
 };
 exports.getByField = async (id) => {
@@ -29,17 +28,4 @@ exports.updateCart = async (data) => {
 exports.deleteCartItem = async (id) => {
   const result = await CartModel.findByIdAndRemove(id);
   return result;
-};
-
-exports.getAllCartItem = async (pageNumber, pageSize, sortOptions, searchQuery) => {
-  const skipAmount = (pageNumber - 1) * pageSize;
-
-  const totalCategory = await cartModel.countDocuments(searchQuery);
-
-  const result = await CartModel.find(searchQuery)
-    .sort(sortOptions)
-    .skip(skipAmount)
-    .limit(pageSize);
-
-  return { result, totalCategory };
 };

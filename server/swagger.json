@@ -5,7 +5,7 @@
     "title": "API"
   },
   "basePath": "/api/v1",
-  "tags": ["Authentication", "Product"],
+  "tags": ["Authentication", "Product", "Category"],
   "schemes": ["http", "https"],
   "consumes": ["application/json", "multipart/form-data", "application/x-www-form-urlencoded"],
   "produces": ["application/json", "multipart/form-data", "application/x-www-form-urlencoded"],
@@ -305,7 +305,7 @@
     }
   },
   "definitions": {
-    "UserSignup": {
+    "Auth": {
       "required": ["name", "email", "password", "mobile"],
       "properties": {
         "name": {
@@ -321,19 +321,6 @@
           "required": true
         },
         "mobile": {
-          "type": "string",
-          "required": true
-        }
-      }
-    },
-    "UserLogin": {
-      "required": ["email", "password"],
-      "properties": {
-        "email": {
-          "type": "string",
-          "required": true
-        },
-        "password": {
           "type": "string",
           "required": true
         }
