@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator');
 const CategoryService = require('./category.service');
 const { messageString } = require('./category.contant');
+const { ValidatePagination } = require('../../utils/commonFunctions');
 
 // Add new category
 
@@ -39,10 +40,23 @@ exports.addCategory = async (req, res) => {
 };
 
 exports.getAllCategory = async (req, res) => {
-  let category;
+  const { currentPage, limit, sortOptions, searchQuery } = ValidatePagination(req.query);
+
   try {
-    category = await CategoryService.getAllCategory();
-    res.status(200)?.json({ category });
+    const { result, totalCategory } = await CategoryService.getAllCategory(
+      currentPage,
+      limit,
+      sortOptions,
+      searchQuery
+    );
+    res.status(200)?.json({
+      pagination: {
+        count: totalCategory,
+        currentPage,
+        totalPages: Math.ceil(totalCategory / limit)
+      },
+      result
+    });
   } catch (err) {
     res.status(500)?.json({ message: err?.message });
   }

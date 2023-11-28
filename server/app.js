@@ -6,6 +6,7 @@ const swaggerUi = require('swagger-ui-express');
 const authRoute = require('./modules/auth/auth.route');
 const productRoute = require('./modules/product/product.route');
 const categoryRoute = require('./modules/category/category.route');
+const cartRoute = require('./modules/cart/cart.route');
 const swaggerSpec = require('./swagger.json');
 
 require('./config/db');
@@ -25,11 +26,13 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE');
   next();
 });
+
 app.get('/', (_req, res) => {
   res.json({
     message: 'Server is running'
   });
 });
+
 app.use(
   '/api-docs',
   swaggerUi.serve,
@@ -40,6 +43,7 @@ app.use(
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/product', productRoute);
 app.use('/api/v1/category', categoryRoute);
+app.use('/api/v1/cart', cartRoute);
 
 // app.use(() => {
 //     const error = new HttpError('Could not find this route', 404);
