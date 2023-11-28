@@ -1,9 +1,9 @@
 const { validationResult } = require('express-validator');
 const { messageString, MIME_TYPE_MAP } = require('./product.constant');
 const ProductService = require('./product.service');
-
+const CategoryService = require('../category/category.service');
 const { uploadFile, deleteObject } = require('../../models/s3');
-const { generateFileName } = require('../../utils/commonFunctions');
+const { generateFileName, ValidatePagination } = require('../../utils/commonFunctions');
 
 // Add new Product
 
@@ -14,6 +14,17 @@ exports.addProduct = async (req, res) => {
     return res.status(422).json({ message: messageString?.invalidInputs });
   }
   const { name, description, price, category } = req.body;
+
+  let checkCategory;
+  try {
+    checkCategory = await CategoryService.getById(category);
+  } catch (err) {
+    res.status(500)?.json({ message: err?.message });
+  }
+
+  if (!checkCategory) {
+    return res.status(404)?.json({ message: messageString.notFoundCategory });
+  }
 
   const fileName = `${generateFileName()}.${MIME_TYPE_MAP[req?.file.mimetype]}`;
 
@@ -38,11 +49,19 @@ exports.addProduct = async (req, res) => {
 };
 
 exports.getAllProducts = async (req, res) => {
-  let products;
-  try {
-    products = await ProductService.getPopulateAllProducts();
+  const { currentPage, limit, sortOptions, searchQuery } = ValidatePagination(req.query);
 
-    products = await products?.map(async (product) => ({
+  let products;
+
+  try {
+    const { result, totalProducts } = await ProductService.getPopulateAllProducts(
+      currentPage,
+      limit,
+      sortOptions,
+      searchQuery
+    );
+
+    products = await result?.map(async (product) => ({
       url: product.image,
       name: product.name,
       description: product.description,
@@ -51,7 +70,15 @@ exports.getAllProducts = async (req, res) => {
       discount: product.discount,
       id: product._id
     }));
-    res.status(200)?.json({ products: await Promise.all(products) });
+
+    res.status(200)?.json({
+      pagination: {
+        count: totalProducts,
+        currentPage,
+        totalPages: Math.ceil(totalProducts / limit)
+      },
+      products: await Promise.all(products)
+    });
   } catch (err) {
     res.status(500)?.json({ message: err?.message });
   }
@@ -87,10 +114,6 @@ exports.deleteProducts = async (req, res) => {
   if (!product) {
     return res.status(404)?.json({ message: messageString.notFoundProduct });
   }
-  console.log('product.owner', product?.owner, '========', req?.userData?.userId);
-  if (String(product.owner) !== String(req.userData.userId)) {
-    return res.status(401)?.json({ message: messageString.notAllowed });
-  }
 
   try {
     await deleteObject(product?.image);
@@ -98,6 +121,10 @@ exports.deleteProducts = async (req, res) => {
     await ProductService.deleteProduct(product.id);
   } catch (err) {
     return res.status(500)?.json({ message: err.message });
+  }
+
+  if (String(product.owner) !== String(req.userData.userId)) {
+    return res.status(401)?.json({ message: messageString.notAllowed });
   }
   res.status(200).json({ message: messageString.productDeleted });
 };

@@ -29,9 +29,18 @@ exports.deleteProduct = async (id) => {
 };
 
 // Populate
-exports.getPopulateAllProducts = async () => {
-  const result = await ProductModel.find().populate('category', 'name description');
-  return result;
+exports.getPopulateAllProducts = async (pageNumber, pageSize, sortOptions, searchQuery) => {
+  const skipAmount = (pageNumber - 1) * pageSize;
+
+  const totalProducts = await ProductModel.countDocuments(searchQuery);
+
+  const result = await ProductModel.find(searchQuery)
+    .populate('category', 'name description')
+    .sort(sortOptions)
+    .skip(skipAmount)
+    .limit(pageSize);
+
+  return { result, totalProducts };
 };
 exports.getByPopulateId = async (id) => {
   const result = await ProductModel.findById(id).populate('category', 'name description');
