@@ -3,11 +3,12 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger.json');
+
 const authRoute = require('./modules/auth/auth.route');
 const productRoute = require('./modules/product/product.route');
 const categoryRoute = require('./modules/category/category.route');
 const cartRoute = require('./modules/cart/cart.route');
-const swaggerSpec = require('./swagger.json');
 
 require('./config/db');
 const { SERVER_PORT, IS_DEVELOPMENT } = require('./config/env');
@@ -40,15 +41,11 @@ app.use(
     customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css'
   })
 );
+
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/product', productRoute);
 app.use('/api/v1/category', categoryRoute);
 app.use('/api/v1/cart', cartRoute);
-
-// app.use(() => {
-//     const error = new HttpError('Could not find this route', 404);
-//     throw error;
-// });
 
 app.listen(SERVER_PORT, () => {
   console.log(

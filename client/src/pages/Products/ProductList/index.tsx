@@ -18,7 +18,6 @@ const ProductList: React.FC<ProductListProps> = () => {
         <Box
           sx={{
             width: "20%",
-
             bgcolor: "background.default",
             p: 3,
           }}
