@@ -3,6 +3,7 @@ import { styled } from "@mui/material/styles";
 import { ProductProps } from "../store/reducers/productSlice";
 import { Button } from "@mui/material";
 import Divider from "@mui/material/Divider";
+
 type ProductItemProps = {
   product: ProductProps;
 };
@@ -29,14 +30,6 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
         <p>{product?.description}</p>
         <p>{product?.price}</p>
       </div>
-      <Button
-        sx={{ marginRight: "15px" }}
-        color="primary"
-        type="button"
-        variant="outlined"
-      >
-        Buy Now
-      </Button>
       <Button color="primary" type="button" variant="outlined">
         Add to cart
       </Button>
