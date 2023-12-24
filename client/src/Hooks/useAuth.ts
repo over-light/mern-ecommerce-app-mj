@@ -54,7 +54,7 @@ export const useAuth = () => {
         })
       );
       if (response?.meta?.requestStatus === "fulfilled") {
-        onLoginModalToggle();
+      navigate('/')
 
         const accessToken: any = decodeToken(response?.payload?.user?.token);
         const refreshToken: any = decodeToken(
@@ -97,6 +97,7 @@ export const useAuth = () => {
       }
     },
   });
+
   //Register Validation
   const registerFormik = useFormik({
     initialValues: {
@@ -141,6 +142,7 @@ export const useAuth = () => {
       }
     },
   });
+
   //Forgot Password Formik
   const forgotPasswordFormik = useFormik({
     initialValues: {
@@ -223,6 +225,7 @@ export const useAuth = () => {
   const onLoginModalToggle = () => {
     setIsLoginModal(!isLoginModal);
   };
+  
   const userVerify = async () => {
     const { id, token } = params;
     if (id && token) {
@@ -247,7 +250,7 @@ export const useAuth = () => {
           })
         );
       }
-      navigate("/");
+      navigate("/login");
     }
   };
 

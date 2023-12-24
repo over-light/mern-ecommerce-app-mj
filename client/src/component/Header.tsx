@@ -1,48 +1,48 @@
-
-
-//MUI
-
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
 import AdbIcon from '@mui/icons-material/Adb';
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
-
-import { Modal } from "./Modal";
-import { useAuth } from "../Hooks";
-import Login from '../pages/auth/Login';
-import Register from '../pages/auth/Register';
-import ForgotPassword from '../pages/auth/ForgotPassword';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { useEffect, useState } from 'react';
+import { getCartItem } from '../store/reducers/cartSlice';
 
 type HeaderProps = {}
 
 export const Header: React.FC<HeaderProps> = () => {
-    const { isLoginModal, onLoginModalToggle, loginFormik, registerFormik, forgotPasswordFormik, auth, authScreen, onChangeScreen } = useAuth();
-    const firstLetter = auth?.auth?.name?.split("")?.[0]?.toUpperCase() || "";
+    const dispatch = useAppDispatch();
+    const navigate=useNavigate();
+    const cart = useAppSelector((state) => state.cart);
+
+    const [cartCount,setCartCount]=useState(0)
+    
+    useEffect(()=>{
+       (async()=>{
+        await dispatch(getCartItem())
+       })()
+    },[dispatch])
+    
     const user: any = document!.cookie
     .split("; ")
     .find((row) => row.startsWith("user="))
     ?.split("=")[1];
-    // console.log("user",JSON.parse(user))
-    const authUser=user?JSON.parse(user):undefined;
-    const renderAuthScreen = () => {
-        switch (authScreen) {
-            case 'login':
-                return <Login auth={auth} loginFormik={loginFormik} onChangeScreen={onChangeScreen} />
-            case 'register':
-                return <Register registerFormik={registerFormik} onChangeScreen={onChangeScreen} />
-            case 'forgot':
-                return <ForgotPassword onChangeScreen={onChangeScreen} forgotPasswordFormik={forgotPasswordFormik} />
-            default:
-                break;
-        }
-    }
 
+    const authUser=user?JSON.parse(user):undefined;
+    
+    const firstLetter = authUser?.name.split("")?.[0]?.toUpperCase()  || "";
+
+ 
+
+    useEffect(()=>{
+        if(cart?.cartItem?.cartItems){
+            setCartCount(cart?.cartItem?.cartItems.length)
+        }
+         
+    },[cart?.cartItem?.cartItems])
     return (
         <>
             <AppBar position="static">
@@ -68,28 +68,23 @@ export const Header: React.FC<HeaderProps> = () => {
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: 'flex' }}>
                         <Link to="/" className='nav-item'>Home</Link>
-                        <Link to="/product" className='nav-item'>Product</Link>
+                       {
+                        !authUser?  <>
+                            <Link to="/login" className='nav-item'>Login</Link>
+                            <Link to="/register" className='nav-item'>Register</Link>
+                            </>:''
+                       } 
                       
                         </Box>
-
-                        {authUser ? (
-                            <Chip sx={{ cursor: 'pointer' }} avatar={<Avatar>{firstLetter}</Avatar>} color='secondary' label={authUser?.name} />
-                        ) :
-                            <Button color="inherit" onClick={onLoginModalToggle}>Login</Button>}
+                        {authUser &&
+                            <>
+                            <Chip sx={{ cursor: 'pointer',marginRight: '20px' }} avatar={<Avatar>{firstLetter}</Avatar>} color='secondary' label="Profile" />
+                            <Chip sx={{ cursor: 'pointer' }} onClick={()=>{navigate('/cart')}} avatar={<Avatar>{cartCount||0}</Avatar>} color='secondary' label="Cart" />
+                            </>
+                        }
                     </Toolbar>
                 </Container>
             </AppBar>
-            <Modal
-                title={authScreen}
-                onCancel={onLoginModalToggle}
-                open={isLoginModal}
-                maxWidth="xs"
-            >
-                {
-                    renderAuthScreen()
-                }
-
-            </Modal>
         </>
     );
 }

@@ -1,0 +1,45 @@
+.card {
+
+    display: flex;
+    gap:10px;
+    padding: "10px 0";
+    flex-direction: column;
+    cursor: pointer;
+    h3{
+        font-weight: 500;
+        display: -webkit-box;
+        -webkit-line-clamp: 1; /* Limit to 3 lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        margin: 10px 0;
+    }
+    p{
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Limit to 3 lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+    }
+    .price {
+        font-weight: 500;
+        margin: 10px 0;
+    }
+}
+
+.cart-quantity-action{
+    display: flex;
+    .cartButton{
+        width: 20px;
+        height: 20px;
+        font-weight: bold;
+        margin: 0 10px;
+        background: #cfcfcf;
+        display: flex;
+        justify-content: center;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+}

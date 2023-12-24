@@ -20,11 +20,17 @@ router.post(
 router.get('/', checkAuth, cartControllers.getAllCartItems);
 
 // Update cart item
-router.patch(
+router.put(
   '/:cid',
   [check('quantity').not().isEmpty()],
   checkAuth,
   cartControllers.updateCart
+);
+// Delete cart item
+router.delete(
+  '/:cid',
+  checkAuth,
+  cartControllers.deleteCart
 );
 
   module.exports = router;

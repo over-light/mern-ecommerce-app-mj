@@ -61,6 +61,7 @@ exports.getAllCategory = async (req, res) => {
     res.status(500)?.json({ message: err?.message });
   }
 };
+
 // eslint-disable-next-line consistent-return
 exports.getCategoryById = async (req, res) => {
   const categoryId = req.params.cid;
@@ -112,6 +113,7 @@ exports.updateCategory = async (req, res) => {
     res.status(500)?.json({ message: err?.message });
   }
 };
+
 // eslint-disable-next-line consistent-return
 exports.deleteCategory = async (req, res) => {
   const productId = req.params.pid;

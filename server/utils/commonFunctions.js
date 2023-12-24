@@ -53,3 +53,26 @@ exports.ValidatePagination = (query) => {
     searchQuery
   };
 };
+
+exports.groupCartItemsByProductId=(cartItems)=> {
+  const groupedItems = cartItems.reduce((result, item) => {
+    const { id,productId, price, quantity,name,image } = item;
+    if (!result[productId]) {
+        // eslint-disable-next-line no-param-reassign
+        result[productId] = {
+            id,
+            productId,
+            quantity: 0,
+            price: 0,
+            name,
+            image
+        };
+    }
+    const currentItem = result[productId];
+    currentItem.quantity += parseInt(quantity, 10);
+    currentItem.price += parseInt(price.replace(/,/g, ''), 10) * parseInt(quantity, 10);
+    return result;
+}, {});
+
+  return Object.values(groupedItems);
+};

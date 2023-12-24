@@ -3,31 +3,22 @@ import Box from "@mui/material/Box";
 import { ProductItem } from "../../../component/ProductItem";
 import { useProduct } from "../../../Hooks/useProduct";
 import { ProductProps } from "../../../store/reducers/productSlice";
-import { Container, TextField } from "@mui/material";
-import { Sidebar } from "../../../component/Sidebar";
-import { Heading } from "../../../component/Heading";
+import { Container, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { useCart } from "../../../Hooks/useCart";
 
 type ProductListProps = {};
 
 const ProductList: React.FC<ProductListProps> = () => {
-  const { products } = useProduct();
-
+  const { products,onProductFilterChange,productFilter } = useProduct();
+  const {onAddCart}=useCart()
+  
   return (
     <Container maxWidth="xl" sx={{ paddingTop: "30px" }}>
       <Box sx={{ display: "flex" }}>
-        <Box
-          sx={{
-            width: "20%",
-            bgcolor: "background.default",
-            p: 3,
-          }}
-          mr={2}
-        >
-          <Sidebar />
-        </Box>
+        
         <Box
           component="main"
-          sx={{ width: "80%", bgcolor: "background.default", p: 3 }}
+          sx={{ width: "100%", bgcolor: "background.default", p: 3 }}
         >
           <Box
             sx={{
@@ -37,15 +28,33 @@ const ProductList: React.FC<ProductListProps> = () => {
             }}
             pb={3}
           >
-            <Box sx={{ width: "auto" }} mr={4}>
-              <Heading title={"ProductList"} />
+            <Box sx={{ width: "30%" }} mr={4}>
+            <FormControl fullWidth>
+              <InputLabel id="product-sort">sortBy</InputLabel>
+                    <Select
+                    
+                      labelId="product-select-label"
+                      id="product-select"
+                      value={productFilter?.sortBy}
+                      label="sortBy"
+                      onChange={(e)=>{onProductFilterChange('sortBy',e.target.value)}}
+                    >
+                        <MenuItem value={'-price'}>-Price</MenuItem>
+                        <MenuItem value={'+price'}>+Price</MenuItem>
+                    </Select>
+          </FormControl>
             </Box>
             <Box sx={{ width: "100%" }}>
               <TextField
-                id="standard-basic"
+                
+                id="search-product"
                 label="Search Product"
                 variant="standard"
                 sx={{ width: "100%" }}
+                value={productFilter?.search}
+                onChange={(e)=>{
+                  onProductFilterChange('search',e.target.value)
+                }}
               />
             </Box>
           </Box>
@@ -60,7 +69,7 @@ const ProductList: React.FC<ProductListProps> = () => {
               products?.map((product: ProductProps) => {
                 return (
                   <Grid item xs={3}>
-                    <ProductItem product={product} />
+                    <ProductItem   {...{onAddCart,product}}/>
                   </Grid>
                 );
               })}

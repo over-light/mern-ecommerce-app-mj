@@ -45,25 +45,11 @@ exports.getAllCartItems = async (req, res) => {
  
   try {
     const {userId} = req.userData;
-    const result = await CartService?.getAllCartItemTest({userId });
   
-    let product;
-
-    // eslint-disable-next-line consistent-return
-    const payload=  result.map(async(pro,index)=>{
-      product= await ProductService.getById(pro?.productId);
-     return {
-      id:result[index]._id,
-      productId:product?._id,
-      name:product.name,
-      price:product.price,
-      quantity:result[index].quantity,
-     };
-     
-    });
-
+    const result = await CartService?.getAllCartItems(userId);
+       
     res.status(200)?.json({
-      cartItems: await Promise.all(payload)
+      cartItems:result
     });
     
   } catch (err) {
@@ -94,14 +80,45 @@ exports.updateCart=async(req,res)=>{
   }
 
   try{
-    // Update cart value
-  await CartService.updateCart({quantity});
-  // Get updated value
-  cartItem = await CartService.getById(cid);
-  res.status(200).json({ cartItem });
+  // Update cart value
+  const result = await CartService.updateCart({id:cid,quantity});
+   
+  res.status(200).json({ result,message:'Updated cart succefully...' });
   
-} catch (err) {
-  res.status(500)?.json({ message: err?.message });
-}
+  } catch (err) {
+    res.status(500)?.json({ message: err?.message });
+  }
 
+};
+
+// eslint-disable-next-line consistent-return
+exports.deleteCart=async(req,res)=>{
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ message: messageString?.invalidInputs });
+  }
+
+  const { cid }=req.params;
+
+  let cartItem;
+  
+  try {
+    cartItem = await CartService.getById(cid);
+  } catch (err) {
+    res.status(500)?.json({ message: err?.message });
+  }
+
+  if (!cartItem) {
+    return res.status(404)?.json({ message: messageString.notFoundCartItem });
+  }
+
+  try{
+  // Update cart value
+  const result = await CartService.deleteCartItem(cid);
+   
+  res.status(200).json({ result,message:'Removed product succefully...' });
+  
+  } catch (err) {
+    res.status(500)?.json({ message: err?.message });
+  }
 };

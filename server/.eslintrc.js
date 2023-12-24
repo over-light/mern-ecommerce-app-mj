@@ -17,7 +17,5 @@ module.exports = {
     quotes: [1, 'single'],
     semi: [2, 'always'],
     'no-underscore-dangle': 0,
-    // 'no-return-await': 0,
-    // 'consistent-return': 0
   },
 };

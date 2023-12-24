@@ -9,8 +9,6 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate:up": "migrate-mongo up",
-    "migrate:down": "migrate-mongo down",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix"
   },

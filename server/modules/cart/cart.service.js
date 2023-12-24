@@ -1,13 +1,10 @@
 const CartModel = require('./cart.model');
 
-exports.getAllCartItem = async () => {
-  const result = await CartModel.find();
+exports.getAllCartItems = async (userId) => {
+  const result = await CartModel.find({ userId }).populate('productId','name description image price');
   return result;
 };
-exports.getAllCartItemTest = async (id) => {
-  const result = await CartModel.find(id);
-  return result;
-};
+
 exports.AddItemOnCart = async (payload) => {
   const result = await CartModel.create(payload);
   return result;
@@ -21,10 +18,14 @@ exports.getByField = async (id) => {
   return result;
 };
 
-exports.updateCart = async (data) => {
-  const result = await CartModel.updateOne(data);
+exports.updateCart = async (payload) => {
+  const { id, quantity } = payload; 
+  const result = await CartModel.findByIdAndUpdate(id,
+    { $set: { quantity } }, 
+  );
   return result;
-};
+};                      
+
 exports.deleteCartItem = async (id) => {
   const result = await CartModel.findByIdAndRemove(id);
   return result;

@@ -68,10 +68,7 @@ axiosInstance.interceptors.request.use(
         .find((row) => row.startsWith("refresh_token="))
         ?.split("=")[1];
 
-      if (!token) {
-        console.log("token", token);
-      }
-
+     
       config.headers.set("Authorization", `Bearer ${token}`);
 
       // Check Token expiration

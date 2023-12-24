@@ -19,16 +19,22 @@ export interface ProductProps {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  id:number
 }
+
+
+
 const initialState: { loading: boolean; products: any; error: any } = {
   loading: false,
   products: {},
   error: "",
 };
-//Get Product List
-export const getProduct = createAsyncThunk("getProduct", async () => {
+
+//Get Product List 
+export const getProduct = createAsyncThunk("getProduct", async ({ page,size ,sortBy,search}:{page:number,size:number,sortBy:string,search:string}) => {
   try {
-    const response = await axiosInstance.get("/product");
+    const url = `/product?page=${page}&size=${size}&sortBy=${sortBy}&search=${search}`
+    const response = await axiosInstance.get(url,{withoutAuth:true});
     return response?.data;
   } catch (err) {
     const message = getErrorMessage(err);

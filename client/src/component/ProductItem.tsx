@@ -3,9 +3,12 @@ import { styled } from "@mui/material/styles";
 import { ProductProps } from "../store/reducers/productSlice";
 import { Button } from "@mui/material";
 import Divider from "@mui/material/Divider";
+import { useAppSelector } from "../store/hooks";
+import { useNavigate } from "react-router-dom";
 
 type ProductItemProps = {
   product: ProductProps;
+  onAddCart:(id:number)=>void
 };
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -15,24 +18,39 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
-export const ProductItem: React.FC<ProductItemProps> = ({ product }) => {
+
+export const ProductItem: React.FC<ProductItemProps> = ({ product,onAddCart }) => {
+  const navigate =useNavigate();
+
+  const cart = useAppSelector((state) => state.cart);
+  const cartItem=cart?.cartItem?.cartItems;
+
+  const isCartItem = cartItem.some((item: { productId: number; }) => item.productId === product?.id);
+
   return (
-    <Item sx={{ marginBottom: 2 }}>
+    <Item sx={{ marginBottom: '20px' }}>
+      <div style={{height:"100px"}}>
       <img
         src={product?.url}
         alt={product?.name}
-        style={{ width: "100%", marginBottom: "15px" }}
+        style={{ width: "100%",height:'100%', objectFit:'contain', marginBottom: "15px" }}
       />
+      </div>
       <Divider variant="fullWidth" component="div" />
 
-      <div style={{ padding: "10px 0" }}>
+      <div  className="card">
         <h3>{product?.name}</h3>
         <p>{product?.description}</p>
-        <p>{product?.price}</p>
+        <p className="price">{product?.price}</p>
       </div>
-      <Button color="primary" type="button" variant="outlined">
+      {
+        isCartItem ? <Button color="primary" type="button" variant="outlined" onClick={()=>{navigate('/cart')}}>
+        View Cart
+      </Button>: <Button color="primary" type="button" variant="outlined" onClick={()=>{onAddCart(product?.id)}}>
         Add to cart
       </Button>
+      }
+     
     </Item>
   );
 };

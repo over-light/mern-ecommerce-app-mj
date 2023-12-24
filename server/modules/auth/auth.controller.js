@@ -4,7 +4,6 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const AuthService = require('./auth.service');
 const emailToken = require('../emailToken/emailToken.controller');
-
 const sendEmail = require('../../utils/sendEmail');
 const { messageString } = require('./auth.constant');
 const emailTemplate = require('../../utils/emailTemplate');
@@ -308,13 +307,13 @@ exports.refreshToken = async (req, res) => {
   }
   res.status(201).json({
     user: {
-      userId: existingUser.id,
-      name: existingUser.name,
-      description: existingUser.description,
-      email: existingUser.email,
-      image: existingUser.image,
-      mobile: existingUser.mobile,
-      isAdmin: existingUser.isAdmin,
+      userId: existingUser?.id,
+      name: existingUser?.name,
+      description: existingUser?.description,
+      email: existingUser?.email,
+      image: existingUser?.image,
+      mobile: existingUser?.mobile,
+      isAdmin: existingUser?.isAdmin,
       refreshToken,
       token: newToken
     },

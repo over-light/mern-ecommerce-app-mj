@@ -76,6 +76,15 @@
             }
           },
           {
+            "name": "category",
+            "in": "formData",
+            "type": "string",
+            "description": "Category id",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          },
+          {
             "name": "description",
             "in": "formData",
             "type": "string",
@@ -305,7 +314,7 @@
     }
   },
   "definitions": {
-    "Auth": {
+    "UserSignup": {
       "required": ["name", "email", "password", "mobile"],
       "properties": {
         "name": {
@@ -321,6 +330,19 @@
           "required": true
         },
         "mobile": {
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "UserLogin": {
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string",
+          "required": true
+        },
+        "password": {
           "type": "string",
           "required": true
         }

@@ -7,7 +7,7 @@ const productSchema = new Schema(
     name: { type: String, require: true },
     description: { type: String, require: true },
     image: { type: String, required: true },
-    price: { type: Number, require: true },
+    price: { type: String, require: true },
     quantity: { type: Number, require: true },
     category: { type: Schema.Types.ObjectId, require: true, ref: 'Category' },
     owner: { type: Schema.Types.ObjectId, ref: 'User', require: true },
