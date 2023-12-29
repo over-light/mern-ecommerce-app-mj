@@ -1,140 +1,120 @@
 const { validationResult } = require('express-validator');
-const CategoryService = require('./category.service');
-const { messageString } = require('./category.contant');
-const { ValidatePagination } = require('../../utils/commonFunctions');
-
-// Add new category
+const CategoryModel =require('./category.model');
 
 // eslint-disable-next-line consistent-return
 exports.addCategory = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).json({ message: messageString?.invalidInputs });
+    return res.status(422).json({ message: 'You must enter description & name.'});
   }
-  const { name, description } = req.body;
+  const { name, description,isActive } = req.body;
 
-  let existingCategory;
+  try{
+    const category = new CategoryModel({
+        name,
+        description,
+        isActive
+      });
 
+      const foundCategory = await CategoryModel.findOne({
+        $or: [{ name }]
+      });
+      if (foundCategory && foundCategory?.name === name) {
+        return res.status(400).json({ error: 'Slug is already in use.' });
+      }
+
+      // eslint-disable-next-line consistent-return
+    category.save((err, data) => {
+      if (err) {
+        return res.status(400).json({
+            error: 'Your request could not be processed. Please try again.'
+        });
+      }
+    
+    res.status(200).json({
+      success: true,
+          message: 'Category has been added successfully!',
+          category: data
+      });
+     });
+    }
+    catch(err){
+        return res.status(400).json({
+            error: 'Your request could not be processed. Please try again.'
+        });
+    }
+};
+
+// eslint-disable-next-line consistent-return
+exports.getCategory=async(req,res)=>{
   try {
-    existingCategory = await CategoryService?.getByField({ name });
-  } catch (err) {
-    return res.status(500).json({ message: err?.message });
-  }
-
-  if (existingCategory) {
-    return res.status(404).send({ message: messageString?.avaibleCategory });
-  }
-
-  try {
-    const payload = {
-      name,
-      description
-    };
-
-    // Add new category
-    const category = await CategoryService?.AddCategory(payload);
-    res.status(201)?.json({ message: messageString?.categoryAddSuccess, category });
-  } catch (err) {
-    res.status(500)?.json({ message: err?.message });
+    const categories = await CategoryModel.find({ isActive: true });
+    res.status(200).json({
+      categories
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
   }
 };
 
-exports.getAllCategory = async (req, res) => {
-  const { currentPage, limit, sortOptions, searchQuery } = ValidatePagination(req.query);
-
+// eslint-disable-next-line consistent-return
+exports.updateCategory=async(req,res)=>{
   try {
-    const { result, totalCategory } = await CategoryService.getAllCategory(
-      currentPage,
-      limit,
-      sortOptions,
-      searchQuery
-    );
-    res.status(200)?.json({
-      pagination: {
-        count: totalCategory,
-        currentPage,
-        totalPages: Math.ceil(totalCategory / limit)
-      },
-      result
+    const categoryId = req.params.id;
+    const update = req.body.category;
+    const { slug } = req.body.category;
+
+    const foundCategory = await CategoryModel.findOne({
+      $or: [{ slug }]
+    });
+   
+    if(!foundCategory){
+      return res.status(400).json({
+        error: 'Category is not found!'
+      });
+    }
+
+    if (foundCategory && foundCategory?._id?.toString() !== categoryId) {
+      return res.status(400).json({ error: 'Category not found!' });
+    }
+
+   await CategoryModel.findOneAndUpdate({_id: categoryId}, update);
+
+   return res.status(200).json({
+      success: true,
+      message: 'Category has been updated successfully!'
     });
   } catch (err) {
-    res.status(500)?.json({ message: err?.message });
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
   }
 };
 
 // eslint-disable-next-line consistent-return
-exports.getCategoryById = async (req, res) => {
-  const categoryId = req.params.cid;
-  let product;
-
+exports.deleteCategory=async(req, res)=>{
   try {
-    product = await CategoryService.getById(categoryId);
+    const {id} = req.params;
 
-    res.status(200)?.json({ product });
-  } catch (err) {
-    res.status(500)?.json({ message: err?.message });
-  }
-  if (!product) {
-    return res.status(404)?.json({ message: messageString.notFoundCategory });
-  }
-};
+    const foundCategory=await CategoryModel.findById(id);
 
-// eslint-disable-next-line consistent-return
-exports.updateCategory = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ message: messageString?.invalidInputs });
-  }
-  const { name, description } = req.body;
-  const categoryId = req.params.cid;
-  let category;
+    if(!foundCategory){
+     return res.status(400).json({
+        error: 'Category is not found!'
+      });
+    }
 
-  try {
-    category = await CategoryService.getById(categoryId);
-  } catch (err) {
-    res.status(500)?.json({ message: err?.message });
+    const product = await CategoryModel.deleteOne({ _id: id });
+    return res.status(200).json({
+      success: true,
+      message: 'Category has been deleted successfully!',
+      product
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
   }
-  if (category.name === name) {
-    return res.status(404).send({ message: messageString?.avaibleCategory });
-  }
-  if (!category) {
-    return res.status(404)?.json({ message: messageString.notFoundCategory });
-  }
-  try {
-    const payload = {
-      name,
-      description
-    };
-    await CategoryService.updateCategory(payload);
-    category = await CategoryService.getById(categoryId);
-
-    res.status(200).json({ category });
-  } catch (err) {
-    res.status(500)?.json({ message: err?.message });
-  }
-};
-
-// eslint-disable-next-line consistent-return
-exports.deleteCategory = async (req, res) => {
-  const productId = req.params.pid;
-
-  let product;
-  try {
-    product = await CategoryService.getById(productId);
-  } catch (err) {
-    res.status(500)?.json({ message: err?.message });
-  }
-  if (!product) {
-    return res.status(404)?.json({ message: messageString.notFoundProduct });
-  }
-  if (String(product.owner) !== String(req.userData.userId)) {
-    return res.status(401)?.json({ message: messageString.notAllowed });
-  }
-
-  try {
-    await CategoryService.deleteProduct(product.id);
-  } catch (err) {
-    return res.status(500)?.json({ message: err.message });
-  }
-  res.status(200).json({ message: messageString.categoryDeleted });
 };

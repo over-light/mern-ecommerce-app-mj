@@ -41,6 +41,29 @@ exports.getSignedUrl = async (Key) => {
   return url;
 };
 
-exports.deleteObject = async (Key) => {
+exports.s3Upload = async (image,fileName) => {
+  let imageUrl = '';
+  let imageKey = '';
+
+  if (image) {
+    
+    const params = {
+      Bucket: AWS_BUCKET_NAME,
+      Key: fileName,
+      Body: image.buffer,
+      ContentType: image.mimetype,
+      ACL: 'public-read'
+    };
+
+    const s3Upload = await s3.upload(params).promise();
+
+    imageUrl = s3Upload.Location;
+    imageKey = s3Upload.key;
+  }
+
+  return { imageUrl, imageKey };
+};
+
+exports.S3DeleteObject = async (Key) => {
   s3.deleteObject({ Bucket: AWS_BUCKET_NAME, Key }).promise();
 };

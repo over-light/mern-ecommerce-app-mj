@@ -1,22 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger.json');
 
-const authRoute = require('./modules/auth/auth.route');
-const productRoute = require('./modules/product/product.route');
-const categoryRoute = require('./modules/category/category.route');
-const cartRoute = require('./modules/cart/cart.route');
-
 require('./config/db');
+
+const allRoutes =require('./routes');
+
 const { SERVER_PORT, IS_DEVELOPMENT } = require('./config/env');
 
 const app = express();
 
 app.use(bodyParser.json());
-app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -42,10 +40,8 @@ app.use(
   })
 );
 
-app.use('/api/v1/auth', authRoute);
-app.use('/api/v1/product', productRoute);
-app.use('/api/v1/category', categoryRoute);
-app.use('/api/v1/cart', cartRoute);
+app.use(allRoutes);
+
 
 app.listen(SERVER_PORT, () => {
   console.log(

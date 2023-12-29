@@ -17,5 +17,9 @@ module.exports = {
     quotes: [1, 'single'],
     semi: [2, 'always'],
     'no-underscore-dangle': 0,
+    'prefer-const': 0,
+    'no-param-reassign': [0, { 
+      'props': false
+  }]
   },
 };

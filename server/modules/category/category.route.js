@@ -1,34 +1,35 @@
 const express = require('express');
 const { check } = require('express-validator');
 const categoryControllers = require('./category.controller');
-const checkUser = require('../../middleware/check-user');
 const checkAuth = require('../../middleware/check-auth');
+const checklRole = require('../../middleware/check-role');
+const { ROLES } = require('../../constants');
 
 const router = express.Router();
-// Get userId if user is loggedIn
-router.use(checkUser);
 
 // Add new Category
 router.post(
-  '/',
+  '/add',
   [check('name').not().isEmpty(), check('description').not().isEmpty()],
   checkAuth,
+  checklRole.check(ROLES.Admin),
   categoryControllers.addCategory
 );
-// Get all category
-router.get('/', categoryControllers.getAllCategory);
-
-// Get single category
-router.get('/:cid', categoryControllers.getCategoryById);
-
-// Delete Category
-router.delete('/:cid', checkAuth, categoryControllers.deleteCategory);
-
-// Update category
-router.patch(
-  '/:cid',
-  [check('name').not().isEmpty(), check('description').not().isEmpty()],
+router.get(
+  '/list',
+  categoryControllers.getCategory
+);
+router.put(
+  '/:id',
   checkAuth,
+  checklRole.check(ROLES.Admin),
   categoryControllers.updateCategory
 );
+router.delete(
+  '/:id',
+  checkAuth,
+  checklRole.check(ROLES.Admin),
+  categoryControllers.deleteCategory
+);
+
 module.exports = router;

@@ -1,75 +1,84 @@
 const { validationResult } = require('express-validator');
-const { messageString, MIME_TYPE_MAP } = require('./product.constant');
-const ProductService = require('./product.service');
-const CategoryService = require('../category/category.service');
-const { uploadFile, deleteObject } = require('../../models/s3');
-const { generateFileName, ValidatePagination } = require('../../utils/commonFunctions');
-
-// Add new Product
+const ProductModule=require('./product.model');
+const { s3Upload,S3DeleteObject } = require('../../models/s3');
+const { generateFileName, ProductPagination } = require('../../utils/commonFunctions');
+const { MIME_TYPE_MAP } = require('../../constants');
+const BrandModel =require('../brand/brand.model');
+const CategoryModel =require('../category/category.model');
 
 // eslint-disable-next-line consistent-return
 exports.addProduct = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ message: messageString?.invalidInputs });
-  }
-  const { name, description, price, category } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ message:errors });
+    }
+  
+    const { sku, name, description, quantity ,price,isActive,brand,category} = req.body;
 
-  let checkCategory;
-  try {
-    checkCategory = await CategoryService.getById(category);
-  } catch (err) {
-    res.status(500)?.json({ message: err?.message });
-  }
+    const image = req.file;
+    try {   
+        const foundProduct = await ProductModule.findOne({ sku });
+      
+        if (foundProduct) {
+          return res.status(400).json({ error: 'This product is already in use.' });
+        }
+  
+        const findBrand=await BrandModel.findById(brand);
 
-  if (!checkCategory) {
-    return res.status(404)?.json({ message: messageString.notFoundCategory });
-  }
+        if (!findBrand) {
+          return res.status(400).json({ error: 'Brand not found' });
+        }
 
-  const fileName = `${generateFileName()}.${MIME_TYPE_MAP[req?.file.mimetype]}`;
+        const findCategory=await CategoryModel.findById(category);
 
-  try {
-    const url = await uploadFile(req, res, fileName);
-    const payload = {
-      name,
-      description,
-      price,
-      image: url.Location,
-      discount: 0,
-      category,
-      owner: req.userData.userId
-    };
+        if (!findCategory) {
+          return res.status(400).json({ error: 'Category not found' });
+        }
 
-    // Add new product
-    const product = await ProductService?.AddProduct(payload);
-    res.status(201)?.json({ message: messageString?.productAddSuccess, product });
-  } catch (err) {
-    res.status(500)?.json({ message: err?.message });
-  }
+        const fileName = `${generateFileName()}.${MIME_TYPE_MAP[req?.file.mimetype]}`;
+
+        const { imageUrl, imageKey } = await s3Upload(image,fileName);
+
+        const product = new ProductModule({
+          sku,
+          name,
+          description,
+          quantity,
+          price,
+          isActive,
+          brand,
+          imageUrl,
+          imageKey,
+          category,
+          user:req.userData.userId
+        });
+  
+        const savedProduct = await product.save();
+  
+        res.status(200).json({
+          success: true,
+          message: 'Product has been added successfully!',
+          product: savedProduct
+        });
+      } catch (error) {
+        return res.status(400).json({
+          error
+        });
+      }
 };
 
-exports.getAllProducts = async (req, res) => {
-  const { currentPage, limit, sortOptions, searchQuery } = ValidatePagination(req.query);
-
-  let products;
-
+exports.getProduct = async (req, res) => {
+  const { currentPage, limit, sortOptions, filters } = ProductPagination(req.query);
+  const skipAmount = (currentPage - 1) * limit;
   try {
-    const { result, totalProducts } = await ProductService.getPopulateAllProducts(
-      currentPage,
-      limit,
-      sortOptions,
-      searchQuery
-    );
-
-    products = await result?.map(async (product) => ({
-      url: product.image,
-      name: product.name,
-      description: product.description,
-      category: product.category,
-      price: product.price,
-      discount: product.discount,
-      id: product._id
-    }));
+    const totalProducts = await ProductModule.countDocuments(filters);
+    const result = await ProductModule.find(filters)
+    .select('name description price imageUrl sku slug')
+    .populate('category', 'name description')
+    .populate('brand', 'name description')
+    .sort(sortOptions)
+    .skip(skipAmount)
+    .limit(limit);
 
     res.status(200)?.json({
       pagination: {
@@ -77,94 +86,95 @@ exports.getAllProducts = async (req, res) => {
         currentPage,
         totalPages: Math.ceil(totalProducts / limit)
       },
-      products: await Promise.all(products)
+      products: result
+    });
+    
+  } catch (err) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.',err
+    });
+  }
+};
+
+// eslint-disable-next-line consistent-return
+exports.getProductBySlug=async(req,res)=>{
+  try { 
+    const {slug} = req.params;
+
+    const productDoc = await ProductModule.findOne({ slug, isActive: true,}, { _id: 0 }).populate(
+      {
+        path: 'brand category',
+        select:['name', 'description','slug'] 
+      }
+    );
+
+    const hasNoBrand =
+      productDoc?.brand === null || productDoc?.brand?.isActive === false;
+
+    if (!productDoc || hasNoBrand) {
+      return res.status(404).json({
+        message: 'No product found.'
+      });
+    }
+
+    res.status(200).json({
+      product: productDoc
     });
   } catch (err) {
-    res.status(500)?.json({ message: err?.message });
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.',err
+    });
   }
 };
 
 // eslint-disable-next-line consistent-return
-exports.getProductByID = async (req, res) => {
-  const productId = req.params.pid;
-  let product;
-
+exports.updateProduct=async(req,res)=>{
   try {
-    product = await ProductService.getByPopulateId(productId);
-  } catch (err) {
-    res.status(500)?.json({ message: err?.message });
-  }
-  if (!product) {
-    return res.status(404)?.json({ message: messageString.notFoundProduct });
-  }
+    const productId = req.params.id;
+    const update = req.body.product;
+    const query = { _id: productId };
+  
+  const product=  await ProductModule.findOneAndUpdate(query, update, {
+      new: true
+    });
+    
+    if(!product){
+      return res.status(400).json({
+         error: 'Product is not found'
+       });
+     }
 
-  res.status(200)?.json({ product });
+    res.status(200).json({
+      success: true,
+      message: 'Product has been updated successfully!'
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
 };
 
 // eslint-disable-next-line consistent-return
-exports.deleteProducts = async (req, res) => {
-  const productId = req.params.pid;
-
-  let product;
+exports.deleteProduct=async(req,res)=>{
   try {
-    product = await ProductService.getById(productId);
-  } catch (err) {
-    res.status(500)?.json({ message: err?.message });
-  }
-  if (!product) {
-    return res.status(404)?.json({ message: messageString.notFoundProduct });
-  }
+    const product = await ProductModule.findByIdAndDelete({ _id: req.params.id });
+    
+    if(!product){
+      return res.status(400).json({
+         error: 'Product is not found'
+       });
+     }
 
-  try {
-    await deleteObject(product?.image);
+   await S3DeleteObject(product.imageKey);
 
-    await ProductService.deleteProduct(product.id);
-  } catch (err) {
-    return res.status(500)?.json({ message: err.message });
-  }
-
-  if (String(product.owner) !== String(req.userData.userId)) {
-    return res.status(401)?.json({ message: messageString.notAllowed });
-  }
-  res.status(200).json({ message: messageString.productDeleted });
-};
-
-// eslint-disable-next-line consistent-return
-exports.updateProducts = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ message: messageString?.invalidInputs });
-  }
-  const { name, description, price, category, discount } = req.body;
-  const productId = req.params.pid;
-  let product;
-
-  try {
-    product = await ProductService.getByPopulateId(productId);
-  } catch (err) {
-    res.status(500)?.json({ message: err?.message });
-  }
-  if (!product) {
-    return res.status(404)?.json({ message: messageString.notFoundProduct });
-  }
-  if (String(product.owner) !== String(req.userData.userId)) {
-    return res.status(401)?.json({ message: messageString.notAllowed });
-  }
-
-  try {
-    const payload = {
-      name,
-      description,
-      price,
-      category,
-      discount: discount || product.discount
-    };
-    await ProductService.updateProduct(payload);
-    product = await ProductService.getByPopulateId(productId);
-
-    res.status(200).json({ product });
-  } catch (err) {
-    res.status(500)?.json({ message: err?.message });
+    res.status(200).json({
+      success: true,
+      message: 'Product has been deleted successfully!',
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
   }
 };
-

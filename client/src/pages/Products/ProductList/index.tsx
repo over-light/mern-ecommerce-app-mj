@@ -40,7 +40,7 @@ const ProductList: React.FC<ProductListProps> = () => {
                       onChange={(e)=>{onProductFilterChange('sortBy',e.target.value)}}
                     >
                         <MenuItem value={'-price'}>-Price</MenuItem>
-                        <MenuItem value={'+price'}>+Price</MenuItem>
+                        <MenuItem value={'price'}>+Price</MenuItem>
                     </Select>
           </FormControl>
             </Box>
