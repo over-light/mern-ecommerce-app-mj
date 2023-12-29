@@ -19,3 +19,4 @@ exports.AWS_ACCESS_KEY_SECRET = process.env.AWS_ACCESS_KEY_SECRET;
 exports.AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME;
 exports.AWS_REGION = process.env.AWS_REGION;
 exports.BASE_API_URL=process.env.BASE_API_URL;
+exports.TOKEN_LIFE=process.env.TOKEN_LIFE;

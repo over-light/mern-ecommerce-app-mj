@@ -4,13 +4,11 @@ const crypto =require('crypto');
 
 const { validationResult } = require('express-validator');
 const { messageString } = require('./user.constant');
-const keys = require('../../config/keys');
 const UserModel = require('./user.model');
 const sendEmail = require('../../utils/sendEmail');
 const emailTemplate = require('../../utils/emailTemplate');
-const { BASE_URL } = require('../../config/env');
+const { BASE_URL,TOKEN_LIFE,TOKEN_KEY } = require('../../config/env');
 
-const { secret, tokenLife } = keys.jwt;
 
 // eslint-disable-next-line consistent-return
 exports.signup = async (req, res) => {
@@ -130,7 +128,7 @@ exports.login=async (req,res)=>{
       role:user.role
     };
   
-    const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
+    const token = jwt.sign(payload, TOKEN_KEY, { expiresIn: TOKEN_LIFE });
 
     if (!token) {
       throw new Error();

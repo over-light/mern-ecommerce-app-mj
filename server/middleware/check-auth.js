@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../modules/user/user.model');
+const {TOKEN_KEY} = require('../config/env');
 
 // eslint-disable-next-line consistent-return
 module.exports = async (req, res, next) => {
@@ -14,7 +15,7 @@ module.exports = async (req, res, next) => {
         if (!token) {
             throw new Error('Authentication failed!');
         }
-        const decodedToken = jwt.verify(token, process.env.TOKEN_KEY);
+        const decodedToken = jwt.verify(token, TOKEN_KEY);
         const { userId } = decodedToken;
 
         try {
