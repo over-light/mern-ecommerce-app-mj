@@ -1,35 +1,37 @@
 const express = require('express');
 const { check } = require('express-validator');
-const categoryControllers = require('./category.controller');
+const brandController = require('./brand.controller');
 const checkAuth = require('../../middleware/check-auth');
 const checklRole = require('../../middleware/check-role');
 const { ROLES } = require('../../constants');
 
 const router = express.Router();
 
-// Add new Category
+// Add new Brand
 router.post(
   '/add',
-  [check('name').not().isEmpty(), check('description').not().isEmpty()],
   checkAuth,
   checklRole.check(ROLES.Admin),
-  categoryControllers.addCategory
+  [check('name').not().isEmpty(), check('description').not().isEmpty()],
+  brandController.addBrand
 );
+
 router.get(
   '/list',
-  categoryControllers.getCategory
+  brandController.getBrands
 );
+
 router.put(
   '/:id',
   checkAuth,
   checklRole.check(ROLES.Admin),
-  categoryControllers.updateCategory
+  brandController.updateBrand,
 );
+
 router.delete(
   '/:id',
   checkAuth,
   checklRole.check(ROLES.Admin),
-  categoryControllers.deleteCategory
+  brandController.deleteBrand,
 );
-
 module.exports = router;

@@ -11,8 +11,8 @@ const options = {
 
 Mongoose.plugin(slug, options);
 
-// Category Schema
-const CategorySchema = new Schema({
+// Brand Schema
+const BrandSchema = new Schema({
   name: {
     type: String,
     trim: true
@@ -37,4 +37,4 @@ const CategorySchema = new Schema({
   }
 });
 
-module.exports = Mongoose.model('Category', CategorySchema);
+module.exports = Mongoose.model('Brand', BrandSchema);

@@ -2,38 +2,59 @@ const express = require('express');
 const { check } = require('express-validator');
 const fileUpload = require('../../middleware/file-upload');
 const productControllers = require('./product.controller');
-const checkUser = require('../../middleware/check-user');
 const checkAuth = require('../../middleware/check-auth');
+const checklRole = require('../../middleware/check-role');
+const { ROLES } = require('../../constants');
 
 const router = express.Router();
-// Get userId if user is loggedIn
-router.use(checkUser);
 
 // Add new product
 router.post(
-  '/',
-  fileUpload.single('image'),
-  [
-    check('name').not().isEmpty(),
-    check('description').not().isEmpty(),
-    check('price').not().isEmpty()
-  ],
-  checkAuth,
-  productControllers.addProduct
+    '/add',
+    fileUpload.single('image'),
+    checkAuth,
+    checklRole.check(ROLES.Admin),
+    [
+      check('sku').not().isEmpty(),
+      check('description').not().isEmpty(),
+      check('name').not().isEmpty(),
+      check('price').not().isEmpty(),
+      check('isActive').not().isEmpty(),
+      check('brand').not().isEmpty(),
+    ],
+    productControllers.addProduct
 );
 
-router.get('/', productControllers.getAllProducts);
-router.get('/:pid', productControllers.getProductByID);
-router.delete('/:pid', checkAuth, productControllers.deleteProducts);
-router.patch(
-  '/:pid',
-  [
-    check('name').not().isEmpty(),
-    check('description').not().isEmpty(),
-    check('price').not().isEmpty(),
-    check('category').not().isEmpty()
-  ],
-  checkAuth,
-  productControllers.updateProducts
+router.get(
+  '/list',
+  productControllers.getProduct
 );
+
+router.get(
+  '/item/:slug',
+  productControllers.getProductBySlug
+);
+
+router.put(
+  '/:id',
+  checkAuth,
+  checklRole.check(ROLES.Admin),
+    [
+      check('sku').not().isEmpty(),
+      check('description').not().isEmpty(),
+      check('name').not().isEmpty(),
+      check('price').not().isEmpty(),
+      check('isActive').not().isEmpty(),
+      check('brand').not().isEmpty(),
+    ],
+  productControllers.updateProduct
+);
+
+router.delete(
+  '/:id',
+  checkAuth,
+  checklRole.check(ROLES.Admin),
+  productControllers.deleteProduct
+);
+
 module.exports = router;

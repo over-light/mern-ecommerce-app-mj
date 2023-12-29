@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const AuthService = require('../modules/auth/auth.service');
+const userModel = require('../modules/user/user.model');
+const {TOKEN_KEY} = require('../config/env');
 
 // eslint-disable-next-line consistent-return
 module.exports = async (req, res, next) => {
@@ -14,17 +15,16 @@ module.exports = async (req, res, next) => {
         if (!token) {
             throw new Error('Authentication failed!');
         }
-        const decodedToken = jwt.verify(token, process.env.TOKEN_KEY);
+        const decodedToken = jwt.verify(token, TOKEN_KEY);
         const { userId } = decodedToken;
 
         try {
-            const user = await AuthService?.getById(userId);
+            const user = await userModel?.findById(userId);
             if (!user) {
                 throw new Error('Authentication failed!');
             }
 
-            req.userData = { userId: user?._id };
-
+            req.userData = { userId: user?._id ,role:user?.role,email:user.email,name:`${user.firstName} ${user.lastName}`};
         } catch (err) {
             console.log(err?.message);
             throw new Error('Authentication failed!');

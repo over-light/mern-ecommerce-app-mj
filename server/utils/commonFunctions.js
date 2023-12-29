@@ -3,16 +3,13 @@ const { ITEMS_PER_PAGE } = require('./paginationConstant');
 
 exports.generateFileName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
 
-exports.ValidatePagination = (query) => {
-  // eslint-disable-next-line prefer-const
-  let { page, size, sortBy, search } = query;
+exports.ProductPagination = (query) => {
 
-  // Ensure a valid page number is assigned
+  let { page, size, sortBy, search,category='all', brand='all'} = query;
   if (!page) {
     page = 1;
   }
 
-  // Ensure a valid size for paginating items is assigned
   if (!size) {
     size = ITEMS_PER_PAGE;
   }
@@ -28,13 +25,17 @@ exports.ValidatePagination = (query) => {
   if (typeof sortBy === 'string') {
   if (sortBy.startsWith('-')) {
     // Descending order
-    const field = sortBy.substring(1); // Remove the leading "-"
+    const field = sortBy.substring(1);
     sortOptions[field] = -1;
   } else {
     // Ascending order
     sortOptions[sortBy] = 1;
   }
   }
+
+ // Construct the category and brand filters
+ const categoryFilter = category !== 'all' ? { category } : {};
+ const brandFilter = brand !== 'all' ? { brand } : {};
 
   // Construct the search query based on the 'search' parameter
   const searchQuery = search
@@ -46,33 +47,30 @@ exports.ValidatePagination = (query) => {
       }
     : {};
 
+    const filters = {
+      ...categoryFilter,
+      ...brandFilter,
+      ...searchQuery,
+    };
+
   return {
     currentPage,
     limit,
     sortOptions,
-    searchQuery
+    filters
   };
 };
 
-exports.groupCartItemsByProductId=(cartItems)=> {
-  const groupedItems = cartItems.reduce((result, item) => {
-    const { id,productId, price, quantity,name,image } = item;
-    if (!result[productId]) {
-        // eslint-disable-next-line no-param-reassign
-        result[productId] = {
-            id,
-            productId,
-            quantity: 0,
-            price: 0,
-            name,
-            image
-        };
-    }
-    const currentItem = result[productId];
-    currentItem.quantity += parseInt(quantity, 10);
-    currentItem.price += parseInt(price.replace(/,/g, ''), 10) * parseInt(quantity, 10);
-    return result;
-}, {});
+exports.caculateItems=(items)=>{
+  const products = items.map(item => {   
+    item.totalPrice = 0;
+    item.purchasePrice = item.price;
 
-  return Object.values(groupedItems);
+    const price = item.purchasePrice;
+    const {quantity} = item;
+    item.totalPrice = parseFloat(Number((price * quantity).toFixed(2)));
+    return item;
+  });
+  return products;
 };
+
