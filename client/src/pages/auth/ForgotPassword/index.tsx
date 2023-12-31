@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 type ForgotPasswordProps = {}
 
-const ForgotPassword: React.FC<ForgotPasswordProps> = () => {
+export const ForgotPassword: React.FC<ForgotPasswordProps> = () => {
     const { forgotPasswordFormik } = useAuth();
     const navigate =useNavigate();
 
@@ -42,6 +42,3 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = () => {
         </Container>
     );
 }
-
-
-export default ForgotPassword;

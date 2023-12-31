@@ -16,7 +16,7 @@ router.post('/signup', [
     check('password')
       .not()
       .isEmpty(),
-    check('phoneNumber')
+    check('mobile')
       .not()
       .isEmpty(),
     check('email')

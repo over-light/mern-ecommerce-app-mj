@@ -26,7 +26,7 @@ const initialState: { loading: boolean; category: any; error: any } = {
 //Get category list
 export const getCategory = createAsyncThunk("getCategory", async () => {
   try {
-    const response = await axiosInstance.get("/category",{withoutAuth:true});
+    const response = await axiosInstance.get("/category/list",{withoutAuth:true});
     return response?.data;
   } catch (err) {
     const message = getErrorMessage(err);

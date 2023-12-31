@@ -20,9 +20,12 @@ export const RegisterSchema = Yup.object().shape({
         .string()
         .required('Please retype your password.')
         .oneOf([Yup.ref('password')], 'Your passwords do not match.'),
-    name: Yup.string()
-        .required("Name is required"),
+    firstName: Yup.string()
+        .required("First name is required"),
+        lastName: Yup.string()
+        .required("Last name is required"),
     mobile: Yup.string()
+        .min(10, "Mobile number must be 9 characters at minimum")
         .required("Mobile is required"),
 
 });

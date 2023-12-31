@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 type RegisterProps = {}
 
-const Register: React.FC<RegisterProps> = () => {
+export const Register: React.FC<RegisterProps> = () => {
     const navigate=useNavigate()
     const { registerFormik } = useAuth();
     const { dirty, isValid, values, errors, touched, handleChange, handleSubmit, } = registerFormik;
@@ -21,13 +21,25 @@ const Register: React.FC<RegisterProps> = () => {
                     <Typography mt={2}>
                         <TextField
                             fullWidth
-                            name="name"
-                            label="Full Name"
+                            name="firstName"
+                            label="First Name"
                             variant='standard'
-                            value={values.name}
+                            value={values.firstName}
                             onChange={handleChange}
-                            error={touched.name && Boolean(errors.name)}
-                            helperText={touched.name && errors.name}
+                            error={touched.firstName && Boolean(errors.firstName)}
+                            helperText={touched.firstName && errors.firstName}
+                        />
+                    </Typography>
+                    <Typography mt={2}>
+                        <TextField
+                            fullWidth
+                            name="lastName"
+                            label="Last Name"
+                            variant='standard'
+                            value={values.lastName}
+                            onChange={handleChange}
+                            error={touched.lastName && Boolean(errors.lastName)}
+                            helperText={touched.lastName && errors.lastName}
                         />
                     </Typography>
                     <Typography mt={2}>
@@ -95,5 +107,3 @@ const Register: React.FC<RegisterProps> = () => {
         </Container>
     );
 }
-
-export default Register;

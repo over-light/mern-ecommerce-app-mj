@@ -89,7 +89,7 @@ exports.addOrder = async (req, res) => {
       const total = availableProduct.reduce((acc, product) => acc + product.totalPrice, 0);
       const order = new OrderModel({
         products,
-        userId,
+        user:userId,
         total
       });
 
@@ -148,7 +148,7 @@ exports.getMyOrder=async(req, res)=>{
         path: 'products',
         populate: {
           path: 'product',
-          select: 'name description imageUrl sku slug', 
+          select: 'name description imageUrl sku slug created', 
           populate: [
             {
               path: 'brand',

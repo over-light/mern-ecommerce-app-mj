@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction, createAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import axiosInstance from '../../utils/axiosInstance';
 import { userInterface } from '../../type/interface';
 import { getErrorMessage } from '../../utils/commonFunction';
@@ -15,7 +15,7 @@ const initialState: InitialState = {
     auth: {},
     error: ''
 }
-// Generates pending, fulfilled and rejected action types
+
 export const signup = createAsyncThunk('signup', async ({ user }: { user: userInterface }) => {
     try {
         const response = await axiosInstance.post('auth/signup', user,{withoutAuth:true});
@@ -26,7 +26,7 @@ export const signup = createAsyncThunk('signup', async ({ user }: { user: userIn
         return Promise.reject(message);
     }
 })
-// Generates pending, fulfilled and rejected action types
+
 export const verifyUser = createAsyncThunk('verifyUser', async ({ id, token }: { id: string | undefined, token: string | undefined }) => {
     try {
         const response = await axiosInstance.get(`/auth/verify-user/${id}/verify/${token}`,{withoutAuth:true});
@@ -37,7 +37,7 @@ export const verifyUser = createAsyncThunk('verifyUser', async ({ id, token }: {
         throw message
     }
 })
-// Generates pending, fulfilled and rejected action types
+
 export const login = createAsyncThunk('login', async ({ user }: { user: { email: string, password: string } }) => {
     try {
         const response = await axiosInstance.post('auth/login', user,{withoutAuth:true});
@@ -48,7 +48,7 @@ export const login = createAsyncThunk('login', async ({ user }: { user: { email:
         throw message
     }
 })
-// Generates pending, fulfilled and rejected action types
+
 export const forgotPassword = createAsyncThunk('forgotPassword', async ({ email }: { email: string }) => {
     try {
         const response = await axiosInstance.post('auth/forgot-password', { email },{withoutAuth:true});
@@ -70,7 +70,6 @@ export const updatePassword = createAsyncThunk('updatePassword', async ({ user }
         return Promise.reject(message);
     }
 })
-export const revertAll = createAction('REVERT_ALL')
 
 const authSlice = createSlice({
     name: 'auth',
@@ -79,10 +78,6 @@ const authSlice = createSlice({
         reset: () => initialState
     },
     extraReducers: builder => {
-        builder.addCase(revertAll, () => initialState)
-        builder.addCase(signup.pending, state => {
-            state.loading = true
-        })
         builder.addCase(
             signup.fulfilled,
             (state, action: PayloadAction<any>) => {

@@ -1,11 +1,9 @@
-import { useState } from "react";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 import {
   signup,
   login,
-  revertAll,
   forgotPassword,
   updatePassword,
   verifyUser,
@@ -26,18 +24,8 @@ export const useAuth = () => {
   const dispatch = useAppDispatch();
   const params = useParams();
 
-  //Local State
-  const [isLoginModal, setIsLoginModal] = useState<boolean>(false);
-  const [authScreen, setAuthScreen] = useState<string>("login");
 
-  const onChangeScreen = (screen: string) => {
-    setAuthScreen(screen);
-    dispatch(revertAll());
-    registerFormik?.resetForm();
-    loginFormik?.resetForm();
-  };
-
-  //Login Validation
+  //Login api call with Validation
   const loginFormik = useFormik({
     initialValues: {
       email: "",
@@ -54,12 +42,9 @@ export const useAuth = () => {
         })
       );
       if (response?.meta?.requestStatus === "fulfilled") {
-      navigate('/')
+        navigate('/')
 
         const accessToken: any = decodeToken(response?.payload?.user?.token);
-        const refreshToken: any = decodeToken(
-          response?.payload?.user?.refreshToken
-        );
         setCookie(
           "access_token",
           response?.payload?.user?.token,
@@ -70,11 +55,6 @@ export const useAuth = () => {
             JSON.stringify(response?.payload?.user),
             new Date(accessToken.exp)
           );
-        setCookie(
-          "refresh_token",
-          response?.payload?.user?.refreshToken,
-          refreshToken.exp
-        );
 
         dispatch(
           handleSnackbar({
@@ -98,10 +78,11 @@ export const useAuth = () => {
     },
   });
 
-  //Register Validation
+  //Register api call with validation
   const registerFormik = useFormik({
     initialValues: {
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       retypePassword: "",
@@ -114,12 +95,14 @@ export const useAuth = () => {
           user: {
             email: values?.email,
             password: values.password,
-            name: values.name,
+            firstName: values.firstName,
+            lastName: values.lastName,
             mobile: values.mobile,
           },
         })
       );
       if (response?.meta?.requestStatus === "fulfilled") {
+        navigate('/login')
         dispatch(
           handleSnackbar({
             open: true,
@@ -127,7 +110,7 @@ export const useAuth = () => {
             type: "success",
           })
         );
-        onChangeScreen("login");
+
       }
       if (response?.meta?.requestStatus === "rejected") {
         // @ts-ignore: Unreachable code error
@@ -163,7 +146,7 @@ export const useAuth = () => {
             type: "success",
           })
         );
-        onChangeScreen("login");
+       navigate('/login')
       }
       if (response?.meta?.requestStatus === "rejected") {
         // @ts-ignore: Unreachable code error
@@ -179,7 +162,7 @@ export const useAuth = () => {
     },
   });
 
-  //Update Password
+  //Update password api call with validation
   const updatePasswordFormik = useFormik({
     initialValues: {
       password: "",
@@ -222,10 +205,7 @@ export const useAuth = () => {
     },
   });
 
-  const onLoginModalToggle = () => {
-    setIsLoginModal(!isLoginModal);
-  };
-  
+  // verify user api call
   const userVerify = async () => {
     const { id, token } = params;
     if (id && token) {
@@ -255,15 +235,11 @@ export const useAuth = () => {
   };
 
   return {
-    isLoginModal,
-    onLoginModalToggle,
-    onChangeScreen,
     loginFormik,
     registerFormik,
     updatePasswordFormik,
     forgotPasswordFormik,
     auth,
-    authScreen,
     userVerify,
   };
 };
