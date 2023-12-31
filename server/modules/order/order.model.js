@@ -3,7 +3,6 @@ const { CART_ITEM_STATUS } = require('../../constants');
 
 const { Schema } = Mongoose;
 
-
 // Cart Item Schema
 const OrderItemSchema = new Schema({
   product: {

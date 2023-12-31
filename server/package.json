@@ -1,10 +1,14 @@
 {
   "name": "ecommerce-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "MERN App Server",
   "main": "app.js",
   "author": "Jayesh Sojitra <jayesh.s@simformsolutions.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jayeshsimform/mern-ecommerce-app"
+  },
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
