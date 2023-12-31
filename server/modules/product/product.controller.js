@@ -20,19 +20,19 @@ exports.addProduct = async (req, res) => {
         const foundProduct = await ProductModule.findOne({ sku });
       
         if (foundProduct) {
-          return res.status(400).json({ error: 'This product is already in use.' });
+          return res.status(400).json({ message: 'This product is already in use.' });
         }
   
         const findBrand=await BrandModel.findById(brand);
 
         if (!findBrand) {
-          return res.status(400).json({ error: 'Brand not found' });
+          return res.status(400).json({ message: 'Brand not found' });
         }
 
         const findCategory=await CategoryModel.findById(category);
 
         if (!findCategory) {
-          return res.status(400).json({ error: 'Category not found' });
+          return res.status(400).json({ message: 'Category not found' });
         }
 
         const fileName = `${generateFileName()}.${MIME_TYPE_MAP[req?.file.mimetype]}`;
@@ -62,7 +62,7 @@ exports.addProduct = async (req, res) => {
         });
       } catch (error) {
         return res.status(400).json({
-          error
+          message:error
         });
       }
 };
@@ -91,7 +91,7 @@ exports.getProduct = async (req, res) => {
     
   } catch (err) {
     res.status(400).json({
-      error: 'Your request could not be processed. Please try again.',err
+      message: 'Your request could not be processed. Please try again.',err
     });
   }
 };
@@ -119,7 +119,7 @@ exports.getProductBySlug=async(req,res)=>{
     });
   } catch (err) {
     res.status(400).json({
-      error: 'Your request could not be processed. Please try again.',err
+      message: 'Your request could not be processed. Please try again.',err
     });
   }
 };
@@ -147,7 +147,7 @@ exports.updateProduct=async(req,res)=>{
     });
   } catch (error) {
     res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
+      message: 'Your request could not be processed. Please try again.'
     });
   }
 };
@@ -159,7 +159,7 @@ exports.deleteProduct=async(req,res)=>{
     
     if(!product){
       return res.status(400).json({
-         error: 'Product is not found'
+        message: 'Product is not found'
        });
      }
 
@@ -171,7 +171,7 @@ exports.deleteProduct=async(req,res)=>{
     });
   } catch (error) {
     return res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
+      message: 'Your request could not be processed. Please try again.'
     });
   }
 };

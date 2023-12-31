@@ -20,14 +20,14 @@ exports.addCategory = async (req, res) => {
         $or: [{ name }]
       });
       if (foundCategory && foundCategory?.name === name) {
-        return res.status(400).json({ error: 'Slug is already in use.' });
+        return res.status(400).json({ message: 'Slug is already in use.' });
       }
 
       // eslint-disable-next-line consistent-return
     category.save((err, data) => {
       if (err) {
         return res.status(400).json({
-            error: 'Your request could not be processed. Please try again.'
+          message: 'Your request could not be processed. Please try again.'
         });
       }
     
@@ -40,7 +40,7 @@ exports.addCategory = async (req, res) => {
     }
     catch(err){
         return res.status(400).json({
-            error: 'Your request could not be processed. Please try again.'
+          message: 'Your request could not be processed. Please try again.'
         });
     }
 };
@@ -54,7 +54,7 @@ exports.getCategory=async(req,res)=>{
     });
   } catch (error) {
     res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
+      message: 'Your request could not be processed. Please try again.'
     });
   }
 };
@@ -72,12 +72,12 @@ exports.updateCategory=async(req,res)=>{
    
     if(!foundCategory){
       return res.status(400).json({
-        error: 'Category is not found!'
+        message: 'Category is not found!'
       });
     }
 
     if (foundCategory && foundCategory?._id?.toString() !== categoryId) {
-      return res.status(400).json({ error: 'Category not found!' });
+      return res.status(400).json({ message: 'Category not found!' });
     }
 
    await CategoryModel.findOneAndUpdate({_id: categoryId}, update);
@@ -88,7 +88,7 @@ exports.updateCategory=async(req,res)=>{
     });
   } catch (err) {
     return res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
+      message: 'Your request could not be processed. Please try again.'
     });
   }
 };
@@ -102,7 +102,7 @@ exports.deleteCategory=async(req, res)=>{
 
     if(!foundCategory){
      return res.status(400).json({
-        error: 'Category is not found!'
+      message: 'Category is not found!'
       });
     }
 
@@ -114,7 +114,7 @@ exports.deleteCategory=async(req, res)=>{
     });
   } catch (error) {
     return res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
+      message: 'Your request could not be processed. Please try again.'
     });
   }
 };

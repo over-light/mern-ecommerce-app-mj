@@ -21,28 +21,6 @@ const axiosInstance = axios.create({
   */
 });
 
-const getRefreshToken = (refreshToken: string, config: any) => {
-  axiosInstance
-    .post("/auth/refresh-token", { refreshToken }, { withoutAuth: true })
-    .then((res) => {
-      const newAccessToken: any = decodeToken(res?.data?.user?.token);
-      const newRefreshToken: any = decodeToken(res?.data?.user?.refreshToken);
-      setCookie(
-        "access_token",
-        res?.data?.user?.token,
-        new Date(newAccessToken.exp)
-      );
-      setCookie(
-        "refresh_token",
-        res?.data?.user?.refreshToken,
-        newRefreshToken.exp
-      );
-      return axiosInstance(config);
-    })
-    .catch((err) => {
-      return Promise.reject(err);
-    });
-};
 
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -79,12 +57,7 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     if (error.response.status === 401) {
-      const refreshToken: any = document!.cookie
-        .split("; ")
-        .find((row) => row.startsWith("refresh_token="))
-        ?.split("=")[1];
-      // Generate new Token
-      getRefreshToken(refreshToken, error.config);
+      
     }
     return Promise.reject(error);
   }

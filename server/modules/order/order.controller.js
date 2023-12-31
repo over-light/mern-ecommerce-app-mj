@@ -72,13 +72,13 @@ exports.addOrder = async (req, res) => {
 
       if(!products.length){
         return res.status(404).json({
-          error: 'Product not found'
+          message: 'Product not found'
         });
       }
     }
     catch(err){
       res.status(400).json({
-        error: 'Your request could not be processed. Please try again.',err
+        message: 'Your request could not be processed. Please try again.',err
       });
     }
 
@@ -131,7 +131,7 @@ exports.addOrder = async (req, res) => {
       });
     } catch (err) {
       res.status(400).json({
-        error: 'Your request could not be processed. Please try again.',err
+        message: 'Your request could not be processed. Please try again.',err
       });
     }
 };
@@ -172,7 +172,7 @@ exports.getMyOrder=async(req, res)=>{
     });
   } catch (err) {
     res.status(400).json({
-      error: 'Your request could not be processed. Please try again.',err
+      message: 'Your request could not be processed. Please try again.',err
     });
   }
 };
@@ -200,7 +200,7 @@ exports.deleteOrder=async(req,res)=>{
     });
   } catch (err) {
     return res.status(400).json({
-      error: 'Your request could not be processed. Please try again.',err
+      message: 'Your request could not be processed. Please try again.',err
     });
   }
 };
@@ -216,7 +216,7 @@ exports.updateStatus=async(req,res)=>{
   
     if (!foundOrder) {
       return res.status(404).json({
-        error: 'Order not found!',
+        message: 'Order not found!',
       });
     }
   
@@ -246,7 +246,7 @@ exports.updateStatus=async(req,res)=>{
     });
   } catch (err) {
     return res.status(400).json({
-      error: 'Your request could not be processed. Please try again.',
+      message: 'Your request could not be processed. Please try again.',
       err 
     });
   }

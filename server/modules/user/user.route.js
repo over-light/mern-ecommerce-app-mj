@@ -36,7 +36,7 @@ router.post('/login', [
   ],
 ], userControllers.login);
 
-router.post('/forgot', [
+router.post('/forgot-password', [
   [
     check('email')
       .normalizeEmail()

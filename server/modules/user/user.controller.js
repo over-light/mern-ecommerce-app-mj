@@ -90,17 +90,17 @@ exports.login=async (req,res)=>{
     if (!user) {
       return res
         .status(400)
-        .send({ error: 'No user found for this email address.' });
+        .send({ message: 'No user found for this email address.' });
     }
     if(!user.isActive){
       return res
         .status(400)
-        .send({ error: messageString.accountNotActive });
+        .send({ message: messageString.accountNotActive });
     }
   }
   catch(err){
     res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
+      message: 'Your request could not be processed. Please try again.'
     });
   }
 
@@ -109,14 +109,14 @@ exports.login=async (req,res)=>{
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        error: 'Password Incorrect'
+        message: 'Password Incorrect'
       });
     }
   }
   catch(err){
     return res.status(400).json({
       success: false,
-      error: 'Password Incorrect'
+      message: 'Password Incorrect'
     });
   }
 
@@ -149,7 +149,7 @@ exports.login=async (req,res)=>{
   }
   catch(err){
     res.status(500).json({
-      error: 'Your request could not be processed. Please try again.'
+      message: 'Your request could not be processed. Please try again.'
     });
   }
 };
@@ -169,13 +169,13 @@ exports.forgot = async(req,res)=>{
   if (!existingUser) {
     return res
       .status(400)
-      .send({ error: 'No user found for this email address.' });
+      .send({ message: 'No user found for this email address.' });
   }
   
   if(!existingUser.isActive){
     return res
       .status(400)
-      .send({ error: messageString.accountNotActive });
+      .send({ message: messageString.accountNotActive });
   }
 }
   catch(err){
@@ -208,7 +208,7 @@ exports.forgot = async(req,res)=>{
   }
   catch(err){
     res.status(400).json({
-      error: err
+      message: err
     });
   }
 };
@@ -229,7 +229,7 @@ exports.resetPassword = async (req, res) => {
 
     if (!resetUser) {
       return res.status(400).json({
-        error:
+        message:
           'Your token has expired. Please attempt to reset your password again.'
       });
     }
@@ -257,7 +257,7 @@ exports.resetPassword = async (req, res) => {
 
   } catch (err) {
     res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
+      message: 'Your request could not be processed. Please try again.'
     });
   }
   res.status(200).json({ message: messageString?.userVerifySuccess });

@@ -21,14 +21,14 @@ exports.addBrand = async (req, res) => {
       });
 
       if (foundCategory && foundCategory?.name === name) {
-        return res.status(400).json({ error: 'Slug is already in use.' });
+        return res.status(400).json({ message: 'Slug is already in use.' });
       }
 
       // eslint-disable-next-line consistent-return
     category.save((err, data) => {
       if (err) {
         return res.status(400).json({
-            error: 'Your request could not be processed. Please try again.'
+          message: 'Your request could not be processed. Please try again.'
         });
       }
     
@@ -41,7 +41,7 @@ exports.addBrand = async (req, res) => {
     }
     catch(err){
         return res.status(400).json({
-            error: 'Your request could not be processed. Please try again.'
+          message: 'Your request could not be processed. Please try again.'
         });
     }
 };
@@ -55,7 +55,7 @@ exports.getBrands=async(req,res)=>{
     });
   } catch (error) {
     res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
+      message: 'Your request could not be processed. Please try again.'
     });
   }
 };
@@ -70,7 +70,7 @@ exports.updateBrand=async(req,res)=>{
   
    if(!foundBrand){
     return res.status(400).json({
-       error: 'Brand is not found!'
+      message: 'Brand is not found!'
      });
    }
    
@@ -80,7 +80,7 @@ exports.updateBrand=async(req,res)=>{
     });
   } catch (err) {
     return res.status(400).json({
-      error: 'Brand is not found!',
+      message: 'Brand is not found!',
     });
   }
 };
@@ -94,7 +94,7 @@ exports.deleteBrand=async(req, res)=>{
 
     if(!foundBrand){
      return res.status(400).json({
-        error: 'Brand is not found!'
+      message: 'Brand is not found!'
       });
     }
     
@@ -104,7 +104,7 @@ exports.deleteBrand=async(req, res)=>{
     });
   } catch (error) {
     return res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
+      message: 'Your request could not be processed. Please try again.'
     });
   }
 };

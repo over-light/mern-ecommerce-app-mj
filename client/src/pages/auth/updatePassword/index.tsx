@@ -1,4 +1,4 @@
-import { TextField, Typography, Paper, Button,Container,Box } from "@mui/material";
+import { TextField, Typography, Button,Container,Box } from "@mui/material";
 import { useAuth } from "../../../Hooks";
 
 type UpdatePasswordProps = {}
