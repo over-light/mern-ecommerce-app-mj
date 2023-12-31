@@ -2,13 +2,14 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { ProductItem } from "../../../component/ProductItem";
 import { useProduct } from "../../../Hooks/useProduct";
-import { ProductProps } from "../../../store/reducers/productSlice";
+
 import { Container, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { useCart } from "../../../Hooks/useCart";
+import { ProductProps } from "../../../store/reducers/product/type";
 
 type ProductListProps = {};
 
-const ProductList: React.FC<ProductListProps> = () => {
+export const ProductList: React.FC<ProductListProps> = () => {
   const { products,onProductFilterChange,productFilter } = useProduct();
   const {onAddCart}=useCart()
   
@@ -30,7 +31,7 @@ const ProductList: React.FC<ProductListProps> = () => {
           >
             <Box sx={{ width: "30%" }} mr={4}>
             <FormControl fullWidth>
-              <InputLabel id="product-sort">sortBy</InputLabel>
+              <InputLabel id="product-sort">Sort by</InputLabel>
                     <Select
                     
                       labelId="product-select-label"
@@ -39,8 +40,9 @@ const ProductList: React.FC<ProductListProps> = () => {
                       label="sortBy"
                       onChange={(e)=>{onProductFilterChange('sortBy',e.target.value)}}
                     >
-                        <MenuItem value={'-price'}>-Price</MenuItem>
-                        <MenuItem value={'price'}>+Price</MenuItem>
+                        <MenuItem value={'-_id'}>Newest First</MenuItem>
+                        <MenuItem value={'-price'}>Price High to Low</MenuItem>
+                        <MenuItem value={'price'}>Price Low to High</MenuItem>
                     </Select>
           </FormControl>
             </Box>
@@ -79,5 +81,3 @@ const ProductList: React.FC<ProductListProps> = () => {
     </Container>
   );
 };
-
-export default ProductList;

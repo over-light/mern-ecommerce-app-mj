@@ -101,12 +101,9 @@ exports.getProductBySlug=async(req,res)=>{
   try { 
     const {slug} = req.params;
 
-    const productDoc = await ProductModule.findOne({ slug, isActive: true,}, { _id: 0 }).populate(
-      {
-        path: 'brand category',
-        select:['name', 'description','slug'] 
-      }
-    );
+    const productDoc = await ProductModule.findOne({ slug, isActive: true,}).select('name description price imageUrl quantity sku slug')
+    .populate('category', 'name description')
+    .populate('brand', 'name description');
 
     const hasNoBrand =
       productDoc?.brand === null || productDoc?.brand?.isActive === false;

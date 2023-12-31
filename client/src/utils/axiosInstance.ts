@@ -58,29 +58,12 @@ axiosInstance.interceptors.request.use(
 
     if (!config.withoutAuth) {
       
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const token: any = document!.cookie
         .split("; ")
         .find((row) => row.startsWith("access_token="))
         ?.split("=")[1];
-      const refreshToken: any = document!.cookie
-        .split("; ")
-        .find((row) => row.startsWith("refresh_token="))
-        ?.split("=")[1];
-
      
       config.headers.set("Authorization", `Bearer ${token}`);
-
-      // Check Token expiration
-      const accessToken: any = decodeToken(token);
-      const expiration = new Date(accessToken.exp * 1000);
-      const now = new Date();
-      const fiveMinutes = 1000 * 60 * 5;
-
-      if (expiration.getTime() - now.getTime() < fiveMinutes) {
-        // Generate new Token
-        getRefreshToken(refreshToken, config);
-      }
     }
 
     return config;

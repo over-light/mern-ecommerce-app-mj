@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 type LoginProps = {}
 
-const Login: React.FC<LoginProps> = () => {
+export const Login: React.FC<LoginProps> = () => {
     const navigate=useNavigate()
     const { loginFormik, auth } = useAuth();
     const { dirty, isValid, values, errors, touched, handleChange, handleSubmit, } = loginFormik;
@@ -56,6 +56,3 @@ const Login: React.FC<LoginProps> = () => {
         </Container>
     );
 }
-
-
-export default Login;

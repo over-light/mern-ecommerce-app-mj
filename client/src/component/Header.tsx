@@ -7,25 +7,13 @@ import AdbIcon from '@mui/icons-material/Adb';
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { useEffect, useState } from 'react';
-import { getCartItem } from '../store/reducers/cartSlice';
 
 type HeaderProps = {}
 
 export const Header: React.FC<HeaderProps> = () => {
-    const dispatch = useAppDispatch();
     const navigate=useNavigate();
-    const cart = useAppSelector((state) => state.cart);
+    const cartCount=0;
 
-    const [cartCount,setCartCount]=useState(0)
-    
-    useEffect(()=>{
-       (async()=>{
-        await dispatch(getCartItem())
-       })()
-    },[dispatch])
-    
     const user: any = document!.cookie
     .split("; ")
     .find((row) => row.startsWith("user="))
@@ -33,16 +21,8 @@ export const Header: React.FC<HeaderProps> = () => {
 
     const authUser=user?JSON.parse(user):undefined;
     
-    const firstLetter = authUser?.name.split("")?.[0]?.toUpperCase()  || "";
+    const firstLetter = authUser?.firstName?.split("")?.[0]?.toUpperCase()  || "";
 
- 
-
-    useEffect(()=>{
-        if(cart?.cartItem?.cartItems){
-            setCartCount(cart?.cartItem?.cartItems.length)
-        }
-         
-    },[cart?.cartItem?.cartItems])
     return (
         <>
             <AppBar position="static">
@@ -72,7 +52,7 @@ export const Header: React.FC<HeaderProps> = () => {
                         !authUser?  <>
                             <Link to="/login" className='nav-item'>Login</Link>
                             <Link to="/register" className='nav-item'>Register</Link>
-                            </>:''
+                            </>: <Link to="/order" className='nav-item'>Order</Link>
                        } 
                       
                         </Box>

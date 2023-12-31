@@ -7,11 +7,13 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import ProductList from "./pages/Products/ProductList";
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import ForgotPassword from "./pages/auth/ForgotPassword";
+import {ProductList} from "./pages/Products/ProductList";
+import {Product} from "./pages/Products/Product";
+import {Login} from "./pages/auth/Login";
+import {Register} from "./pages/auth/Register";
+import {ForgotPassword} from "./pages/auth/ForgotPassword";
 import { Cart } from "./pages/Cart/Cart";
+import { Order } from "./pages/Order/Order";
 
 function App() {
   return (
@@ -20,9 +22,11 @@ function App() {
       <CustomSnackbar />
       <Routes>
         <Route path="/" element={<ProductList />} />
+        <Route path="product/:slug" element={<Product />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/cart" element={<Cart/>}/>
+        <Route path="/order" element={<Order/>}/>
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/user/:id/verify/:token" element={<VerifyUser />} />
         <Route path="/user/:id/update-password/:token" element={<UpdatePassword />} />

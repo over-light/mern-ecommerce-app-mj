@@ -5,19 +5,19 @@ const { Schema } = mongoose;
 
 // User Schema
 const UserSchema = new Schema({
-  email: {
-    type: String,
-    required: true
-  },
-  phoneNumber: {
-    type: String,
-    required: true
-  },
   firstName: {
     type: String,
     required: true
   },
   lastName: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  mobile: {
     type: String,
     required: true
   },

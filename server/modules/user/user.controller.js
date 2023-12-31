@@ -9,7 +9,6 @@ const sendEmail = require('../../utils/sendEmail');
 const emailTemplate = require('../../utils/emailTemplate');
 const { BASE_URL,TOKEN_LIFE,TOKEN_KEY } = require('../../config/env');
 
-
 // eslint-disable-next-line consistent-return
 exports.signup = async (req, res) => {
   const errors = validationResult(req);
@@ -17,7 +16,7 @@ exports.signup = async (req, res) => {
     return res.status(422).json({ message: messageString?.invalidInputs });
   }
 
-  const { email, firstName, lastName, password ,phoneNumber} = req.body;
+  const { email, firstName, lastName, password ,mobile} = req.body;
 
   try {
     const existingUser = await UserModel.findOne({ email });
@@ -39,7 +38,7 @@ try{
       password:hash,
       firstName,
       lastName,
-      phoneNumber,
+      mobile,
       activateAccountToken,
       activateAccountExpires
     });
@@ -62,6 +61,7 @@ try{
         firstName: registeredUser.firstName,
         lastName: registeredUser.lastName,
         email: registeredUser.email,
+        mobile:registeredUser.mobile,
         role: registeredUser.role
       }
     });
@@ -137,13 +137,13 @@ exports.login=async (req,res)=>{
     res.status(200).json({
       success: true,
       message:messageString.loginSuccess,
-      token,
       user: {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        role: user.role
+        role: user.role,
+        token
       }
     });
   }
