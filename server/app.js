@@ -42,7 +42,6 @@ app.use(
 
 app.use(allRoutes);
 
-
 app.listen(SERVER_PORT, () => {
   console.log(
     `⚡️[server]: Server is running at ${IS_DEVELOPMENT ? 'http://localhost:' : ''}${SERVER_PORT}`
