@@ -14,7 +14,8 @@
     "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .js",
-    "lint:fix": "eslint . --ext .js --fix"
+    "lint:fix": "eslint . --ext .js --fix",
+    "seed:db": "node utils/seed.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.325.0",

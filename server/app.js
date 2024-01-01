@@ -3,8 +3,8 @@ const bodyParser = require('body-parser');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger.json');
-
-require('./config/db');
+  
+const setupDB=require('./config/db');
 
 const allRoutes =require('./routes');
 
@@ -39,6 +39,8 @@ app.use(
     customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css'
   })
 );
+
+setupDB();
 
 app.use(allRoutes);
 

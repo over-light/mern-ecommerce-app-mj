@@ -162,6 +162,7 @@ exports.forgot = async(req,res)=>{
   
   const { email } = req.body;
   let  existingUser;
+
   try{
     existingUser = await UserModel.findOne({ email });
 
