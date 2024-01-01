@@ -8,6 +8,7 @@ module.exports = async (to, subject, text, html) => {
       user: EMAIL_USERNAME,
       pass: EMAIL_PASSWORD,
     },
+    secure: false,
   });
   
   await new Promise((resolve, reject) => {

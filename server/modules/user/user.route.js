@@ -20,16 +20,18 @@ router.post('/signup', [
       .not()
       .isEmpty(),
     check('email')
-      .normalizeEmail()
-      .isEmail(),
+      .isEmail()
+      .not()
+      .isEmpty(),
   ],
 ], userControllers.signup);
 
 router.post('/login', [
   [
     check('email')
-      .normalizeEmail()
-      .isEmail(),
+      .isEmail()
+      .not()
+      .isEmpty(),
     check('password')
       .not()
       .isEmpty(),
@@ -39,8 +41,9 @@ router.post('/login', [
 router.post('/forgot-password', [
   [
     check('email')
-      .normalizeEmail()
-      .isEmail()
+    .isEmail()
+    .not()
+    .isEmpty()
   ],
 ], userControllers.forgot);
 
