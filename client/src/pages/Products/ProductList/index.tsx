@@ -21,7 +21,7 @@ const renderCategory = ()=>{
 }
 
 const renderBrand = ()=>{
-  return brand?.brands?.categories
+  return brand?.brands?.brands
   ?.map((cat: { name: string ,_id:string })=> <MenuItem key={cat._id} value={cat._id}>{cat?.name}</MenuItem>)
 }
 
