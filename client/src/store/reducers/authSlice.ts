@@ -62,7 +62,7 @@ export const forgotPassword = createAsyncThunk('forgotPassword', async ({ email 
 // Generates pending, fulfilled and rejected action types
 export const updatePassword = createAsyncThunk('updatePassword', async ({ user }: { user: { userId: string | undefined, password: string, token: string | undefined } }) => {
     try {
-        const response = await axiosInstance.post('auth/update-password', user,{withoutAuth:true});
+        const response = await axiosInstance.post(`auth/reset/${user?.token}`, {password:user?.password},{withoutAuth:true});
         return response?.data
     }
     catch (err) {

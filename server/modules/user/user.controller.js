@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto =require('crypto');
-
 const { validationResult } = require('express-validator');
 const { messageString } = require('./user.constant');
 const UserModel = require('./user.model');
@@ -192,7 +191,7 @@ exports.forgot = async(req,res)=>{
 
     existingUser.save();
 
-    const url = `${BASE_URL}/user/${existingUser._id}/verify/${resetToken}`;
+    const url = `${BASE_URL}/user/${existingUser._id}/update-password/${resetToken}`;
 
     await sendEmail(
       existingUser.email,
@@ -247,8 +246,9 @@ exports.resetPassword = async (req, res) => {
       resetUser.email,
       messageString?.successPassword,
       '',
-      emailTemplate.accountActivated(messageString?.successPassword)
+      emailTemplate.passwordUpdated(messageString?.successPassword)
     );
+
     res.status(200).json({
       success: true,
       message:
@@ -260,7 +260,6 @@ exports.resetPassword = async (req, res) => {
       message: 'Your request could not be processed. Please try again.'
     });
   }
-  res.status(200).json({ message: messageString?.userVerifySuccess });
 };
 
 // eslint-disable-next-line consistent-return

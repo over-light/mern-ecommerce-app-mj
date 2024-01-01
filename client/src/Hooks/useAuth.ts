@@ -189,7 +189,7 @@ export const useAuth = () => {
             type: "success",
           })
         );
-        navigate("/");
+        navigate("/login");
       }
       if (response?.meta?.requestStatus === "rejected") {
         // @ts-ignore: Unreachable code error
