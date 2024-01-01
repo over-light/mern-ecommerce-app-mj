@@ -2,7 +2,7 @@ import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Divider from "@mui/material/Divider";
 import { useNavigate } from "react-router-dom";
-import { ProductProps } from "../store/reducers/product/type";
+import { ProductProps } from "../store/reducers/Product/type";
 
 type ProductItemProps = {
   product: ProductProps;

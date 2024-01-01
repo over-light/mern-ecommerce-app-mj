@@ -7,8 +7,8 @@ import {
   forgotPassword,
   updatePassword,
   verifyUser,
-} from "../store/reducers/authSlice";
-import { handleSnackbar } from "../store/reducers/snackbarSlice";
+} from "../store/reducers/Auth/authSlice";
+import { handleSnackbar } from "../store/reducers/Snackbar/snackbarSlice";
 import {
   LoginSchema,
   RegisterSchema,

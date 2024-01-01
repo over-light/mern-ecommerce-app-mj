@@ -84,7 +84,28 @@ button {
   color: red;
 }
 
-button:last-child {
-  color: green;
+  button:last-child {
+    color: green;
+  }
 }
+
+.product_filter{
+  display:flex;
+  flex-direction: column;
+
+  .search_filter{
+      margin-bottom: 40px;
+  }
+  .sort_filter{
+    ul{
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: auto auto auto;
+      gap: 15px;
+      li{
+
+      }
+    }
+  }
 }

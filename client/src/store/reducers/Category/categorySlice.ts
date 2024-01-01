@@ -1,21 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axiosInstance from "../../utils/axiosInstance";
-import { getErrorMessage } from "../../utils/commonFunction";
-
-export interface CategoryProps {
-    name: string;
-    description: string;
-    _id: string;
-    createdAt: string;
-    updatedAt: string;
-  
-}
-  
-export interface CategoryInterface {
-  message: string;
-  category: CategoryProps;
-}
-
+import axiosInstance from "../../../utils/axiosInstance";
+import { getErrorMessage } from "../../../utils/commonFunction";
+import { CategoryInterface } from "./type";
 
 const initialState: { loading: boolean; category: any; error: any } = {
   loading: false,

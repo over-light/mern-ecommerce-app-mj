@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 import { getErrorMessage } from "../../../utils/commonFunction";
 import axiosInstance from "../../../utils/axiosInstance";
-import { OrderProps } from "./Type";
+import { OrderProps } from "./type";
 
 
 const initialState: { loading: boolean; orderItem: OrderProps; error: any } = {

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import {useAppDispatch } from "../store/hooks";
-import { handleSnackbar } from "../store/reducers/snackbarSlice";
+import { handleSnackbar } from "../store/reducers/Snackbar/snackbarSlice";
 import { getOrder } from "../store/reducers/Order/orderSlice";
 
 export const useOrder = () => {

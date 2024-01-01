@@ -49,9 +49,9 @@ exports.addBrand = async (req, res) => {
 // eslint-disable-next-line consistent-return
 exports.getBrands=async(req,res)=>{
   try {
-    const categories = await BrandModel.find({ isActive: true });
+    const brands = await BrandModel.find({ isActive: true });
     res.status(200).json({
-      categories
+      brands
     });
   } catch (error) {
     res.status(400).json({
