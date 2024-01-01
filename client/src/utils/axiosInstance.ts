@@ -1,7 +1,4 @@
 import axios from "axios";
-
-import { decodeToken, setCookie } from "./commonFunction";
-
 declare module "axios" {
   export interface AxiosRequestConfig {
     withoutAuth?: boolean;

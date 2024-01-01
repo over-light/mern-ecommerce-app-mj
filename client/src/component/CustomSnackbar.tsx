@@ -2,7 +2,7 @@ import React from "react";
 import Snackbar from '@mui/material/Snackbar';
 import { Alert } from "@mui/material";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { handleSnackbar } from "../store/reducers/snackbarSlice";
+import { handleSnackbar } from "../store/reducers/Snackbar/snackbarSlice";
 
 type CustomSnackbarProps = {}
 

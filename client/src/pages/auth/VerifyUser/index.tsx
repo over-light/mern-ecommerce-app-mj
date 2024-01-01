@@ -1,6 +1,6 @@
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import { useAuth } from "../../../Hooks";
+import { useAuth } from "../../../hooks";
 import { useEffect } from 'react';
 
 type VerifyUserProps = {}

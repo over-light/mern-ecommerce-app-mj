@@ -1,10 +1,10 @@
 import {  useEffect, useState } from "react";
-import { ProductProps } from "../store/reducers/product/type";
+import { ProductProps } from "../store/reducers/Product/type";
 import { getItem, removeItem, setItem } from "../utils/storage";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProductBySlug } from "../store/reducers/productSlice";
+import { getProductBySlug } from "../store/reducers/Product/productSlice";
 import { useAppDispatch } from "../store/hooks";
-import { handleSnackbar } from "../store/reducers/snackbarSlice";
+import { handleSnackbar } from "../store/reducers/Snackbar/snackbarSlice";
 import { placeOrder } from "../store/reducers/Order/orderSlice";
 
 
@@ -13,12 +13,15 @@ export const useCart = () => {
 const [cart,setCart]=useState<any>([])
 const [totalQuantity,setQuantity]=useState(0);
 const [isItemInCart,setIsItemInCart]=useState(false)
-
+const [totalCartItem,setTotalCartItem]=useState(0);
 // Hook
 const params=useParams()
 const dispatch = useAppDispatch();
 const navigate=useNavigate();
 
+useEffect(()=>{
+  setTotalCartItem(cart.length)
+},[cart])
 
 // Update total quantity and update item flag
 useEffect(()=>{
@@ -138,6 +141,7 @@ const onPlaceOrder=async()=>{
   }
 }
 
+
   return {
     onAddCart,
     onUpdateCart,
@@ -145,6 +149,7 @@ const onPlaceOrder=async()=>{
     totalQuantity,
     isItemInCart,
     cart,
-    onPlaceOrder
+    onPlaceOrder,
+    totalCartItem
   };
 };

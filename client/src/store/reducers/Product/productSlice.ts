@@ -1,13 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axiosInstance from "../../utils/axiosInstance";
-import { getErrorMessage } from "../../utils/commonFunction";
-import { ProductProps } from "./product/type";
-
-export interface ProductsInterface {
-  message: string;
-  product: ProductProps;
-}
-
+import axiosInstance from "../../../utils/axiosInstance";
+import { getErrorMessage } from "../../../utils/commonFunction";
+import { ProductProps, ProductsInterface } from "./type";
 
 const initialState: { loading: boolean; products: any; error: any,product: ProductProps} = {
   loading: true,

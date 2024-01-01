@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
-import authReducer from './reducers/authSlice';
-import snackReducer from './reducers/snackbarSlice';
-import productReducer from './reducers/productSlice';
-import categoryReducer from './reducers/categorySlice'
+import authReducer from './reducers/Auth/authSlice';
+import snackReducer from './reducers/Snackbar/snackbarSlice';
+import productReducer from './reducers/Product/productSlice';
+import categoryReducer from './reducers/Category/categorySlice'
 import orderSlice from './reducers/Order/orderSlice'
+import brandSlice from './reducers/Brand/brandSlice'
+
 
 export const store = configureStore({
     reducer: {
@@ -11,7 +13,8 @@ export const store = configureStore({
         snackbar: snackReducer,
         product:productReducer,
         category: categoryReducer,
-        order:orderSlice
+        order:orderSlice,
+        brand:brandSlice
     },
 })
 

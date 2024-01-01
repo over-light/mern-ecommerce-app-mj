@@ -1,16 +1,17 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import axiosInstance from '../../utils/axiosInstance';
-import { userInterface } from '../../type/interface';
-import { getErrorMessage } from '../../utils/commonFunction';
+import axiosInstance from '../../../utils/axiosInstance';
+import { SignupResponseProps, userInterface } from './type';
+import { getErrorMessage } from '../../../utils/commonFunction';
+import { ForgotPasswordProps, LoginProps, VerifyUserProps,UpdatePasswordProps } from '../../../type/interface';
 
 
-type InitialState = {
+type InitialStateProps = {
     loading: boolean
     auth: any
     error: any
 }
 
-const initialState: InitialState = {
+const initialState: InitialStateProps = {
     loading: false,
     auth: {},
     error: ''
@@ -27,7 +28,7 @@ export const signup = createAsyncThunk('signup', async ({ user }: { user: userIn
     }
 })
 
-export const verifyUser = createAsyncThunk('verifyUser', async ({ id, token }: { id: string | undefined, token: string | undefined }) => {
+export const verifyUser = createAsyncThunk('verifyUser', async ({ id, token }: VerifyUserProps) => {
     try {
         const response = await axiosInstance.get(`/auth/verify-user/${id}/verify/${token}`,{withoutAuth:true});
         return response?.data
@@ -38,7 +39,7 @@ export const verifyUser = createAsyncThunk('verifyUser', async ({ id, token }: {
     }
 })
 
-export const login = createAsyncThunk('login', async ({ user }: { user: { email: string, password: string } }) => {
+export const login = createAsyncThunk('login', async ({ user }: { user: LoginProps}) => {
     try {
         const response = await axiosInstance.post('auth/login', user,{withoutAuth:true});
         return response?.data
@@ -49,7 +50,7 @@ export const login = createAsyncThunk('login', async ({ user }: { user: { email:
     }
 })
 
-export const forgotPassword = createAsyncThunk('forgotPassword', async ({ email }: { email: string }) => {
+export const forgotPassword = createAsyncThunk('forgotPassword', async ({ email }: ForgotPasswordProps) => {
     try {
         const response = await axiosInstance.post('auth/forgot-password', { email },{withoutAuth:true});
         return response?.data
@@ -59,8 +60,8 @@ export const forgotPassword = createAsyncThunk('forgotPassword', async ({ email 
         return Promise.reject(message);
     }
 })
-// Generates pending, fulfilled and rejected action types
-export const updatePassword = createAsyncThunk('updatePassword', async ({ user }: { user: { userId: string | undefined, password: string, token: string | undefined } }) => {
+
+export const updatePassword = createAsyncThunk('updatePassword', async ({ user }: { user: UpdatePasswordProps}) => {
     try {
         const response = await axiosInstance.post(`auth/reset/${user?.token}`, {password:user?.password},{withoutAuth:true});
         return response?.data
@@ -80,7 +81,7 @@ const authSlice = createSlice({
     extraReducers: builder => {
         builder.addCase(
             signup.fulfilled,
-            (state, action: PayloadAction<any>) => {
+            (state, action: PayloadAction<SignupResponseProps>) => {
                 state.loading = false
                 state.auth = action.payload
                 state.error = ''
@@ -98,7 +99,7 @@ const authSlice = createSlice({
         })
         builder.addCase(
             login.fulfilled,
-            (state, action: PayloadAction<any>) => {
+            (state, action: PayloadAction<SignupResponseProps>) => {
                 state.loading = false
                 state.auth = action.payload
                 state.error = ''

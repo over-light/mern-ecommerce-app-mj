@@ -34,3 +34,9 @@ export interface ProductAPIPayloadProps {
     description: string
   }
   
+
+  export interface ProductsInterface {
+    message: string;
+    product: ProductProps;
+  }
+  

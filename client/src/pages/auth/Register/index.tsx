@@ -1,6 +1,6 @@
 
 import { Button, TextField, Typography,Container,Box } from "@mui/material";
-import { useAuth } from "../../../Hooks";
+import { useAuth } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
 
 type RegisterProps = {}
