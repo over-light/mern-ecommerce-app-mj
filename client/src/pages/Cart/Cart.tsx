@@ -9,6 +9,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Box, Button, Container, TableFooter } from "@mui/material";
 import { useCart } from "../../hooks/useCart";
+import { useAppSelector } from '../../store/hooks';
+import { Loader } from '../../component/Loader';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -32,7 +34,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }));
 
 export const Cart=()=>{
-  const {onUpdateCart,cart,onPlaceOrder} =useCart()
+  const {onUpdateCart,cart,onPlaceOrder} =useCart();
+
+//Get state from reducers
+const order = useAppSelector((state) => state.order);
 
 // Calculate total quantity
 const totalQuantity = cart?.reduce((total: any, item: { totalQuantity: any; }) => total + item.totalQuantity, 0);
@@ -55,69 +60,70 @@ const calculateTotalPrice = () => {
   return totalPrice.toFixed(2);
 };
 
+console.log("order",order?.loading)
 return (
     <Container
         sx={{ paddingTop: "30px",}}>
-      <Box
-        component="main"
-        sx={{maxWidth:"1024" , bgcolor: "background.default", p: 3, margin:"0 auto" }}
-        >
-          <TableContainer component={Paper}>
-            {cart.length>0&&
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell>Product</StyledTableCell>
-                    <StyledTableCell align="center">Quantity</StyledTableCell>
-                    <StyledTableCell align="center">Price</StyledTableCell>
-                    <StyledTableCell align="center">Total Price</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {cart?.map((row: { name: string ;imageUrl: string; _id: string; totalQuantity: number,price:string },index: number) => (
-                    <StyledTableRow
-                    
-                  style ={ index % 2? { background : "#fdffe0" }:{ background : "white" }}
-                    key={row?.name}>
-                      <StyledTableCell component="th" scope="row">
-                    <div style={{display:'flex',gap:'15px', alignItems:'center'}}>
-                      <img style={{width:'50px', height:'50px', objectFit:'contain'}} 
-                      src={row?.imageUrl} alt={row?.name} id={row?._id}/> 
-                      {row?.name}
-                    </div>
-                      </StyledTableCell>
-                      <StyledTableCell align="center"> 
-                      <div className="cart-quantity-action">
-                        <span 
-                        className="cartButton" 
-                        onClick={()=>{onUpdateCart(row?._id,row.totalQuantity-1)}}>-</span>
-                          {row.totalQuantity}
-                        <span className="cartButton" onClick={()=>{onUpdateCart(row?._id,row.totalQuantity+1)}}>+</span>
+      {order?.loading? <Loader/>:
+        <Box
+          component="main"
+          sx={{maxWidth:"1024" , bgcolor: "background.default", p: 3, margin:"0 auto" }}
+          >
+            <TableContainer component={Paper}>
+              {cart.length>0&&
+                <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell>Product</StyledTableCell>
+                      <StyledTableCell align="center">Quantity</StyledTableCell>
+                      <StyledTableCell align="center">Price</StyledTableCell>
+                      <StyledTableCell align="center">Total Price</StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {cart?.map((row: { name: string ;imageUrl: string; _id: string; totalQuantity: number,price:string },index: number) => (
+                      <StyledTableRow
+                      
+                      key={row?.name}>
+                        <StyledTableCell component="th" scope="row">
+                      <div style={{display:'flex',gap:'15px', alignItems:'center'}}>
+                        <img style={{width:'50px', height:'50px', objectFit:'contain'}} 
+                        src={row?.imageUrl} alt={row?.name} id={row?._id}/> 
+                        {row?.name}
                       </div>
+                        </StyledTableCell>
+                        <StyledTableCell align="center"> 
+                        <div className="cart-quantity-action">
+                          <span 
+                          className="cartButton" 
+                          onClick={()=>{onUpdateCart(row?._id,row.totalQuantity-1)}}>-</span>
+                            {row.totalQuantity}
+                          <span className="cartButton" onClick={()=>{onUpdateCart(row?._id,row.totalQuantity+1)}}>+</span>
+                        </div>
+                        </StyledTableCell>
+                        <StyledTableCell align="center">{row?.price}</StyledTableCell>
+                        <StyledTableCell align="center">{totalPrice(row?.price,row.totalQuantity)}</StyledTableCell>
+                      </StyledTableRow>
+                    ))}
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      <StyledTableCell align="left"><b>Total</b></StyledTableCell>
+                      <StyledTableCell align="center">{totalQuantity}</StyledTableCell>
+                      <StyledTableCell align="center">-</StyledTableCell>
+                      <StyledTableCell align="center">{calculateTotalPrice()}</StyledTableCell>
+                    </TableRow>
+                    <TableRow >
+                    <StyledTableCell align="right" colSpan={4}>
+                      <Button sx={{margin: "7px 0"}} type="button" variant="contained" onClick={onPlaceOrder}>Place Order</Button>
                       </StyledTableCell>
-                      <StyledTableCell align="center">{row?.price}</StyledTableCell>
-                      <StyledTableCell align="center">{totalPrice(row?.price,row.totalQuantity)}</StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-                <TableFooter>
-                  <TableRow>
-                    <StyledTableCell align="left"><b>Total</b></StyledTableCell>
-                    <StyledTableCell align="left">{totalQuantity}</StyledTableCell>
-                    <StyledTableCell align="center">-</StyledTableCell>
-                    <StyledTableCell align="center">{calculateTotalPrice()}</StyledTableCell>
-                  </TableRow>
-                  <TableRow >
-                  <StyledTableCell align="right" colSpan={4}>
-                    <Button sx={{margin: "7px 0"}} type="button" variant="contained" onClick={onPlaceOrder}>Place Order</Button>
-                    </StyledTableCell>
-                  </TableRow>
-                </TableFooter>
-              </Table>
-            }
-          </TableContainer>
-      </Box>
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+              }
+            </TableContainer>
+        </Box>
+      }
     </Container>
-
     )
 }

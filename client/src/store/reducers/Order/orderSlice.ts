@@ -65,6 +65,24 @@ export const placeOrder = createAsyncThunk('placeOrder', async ({ order }:{order
         state.orderItem = initialState.orderItem;
         state.error = action.error.message || "Something went wrong";
       });
+
+      //Place order
+      builder.addCase(placeOrder.pending, (state) => {
+        state.loading = true;
+      });
+      builder.addCase(
+        placeOrder.fulfilled,
+        (state, action: PayloadAction<OrderProps>) => {
+          state.loading = false;
+          state.orderItem = action.payload;
+          state.error = "";
+        }
+      );
+      builder.addCase(placeOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.orderItem = initialState.orderItem;
+        state.error = action.error.message || "Something went wrong";
+      });
     },
   });
   

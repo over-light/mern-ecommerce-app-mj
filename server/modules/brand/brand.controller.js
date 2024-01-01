@@ -1,47 +1,48 @@
 const { validationResult } = require('express-validator');
 const BrandModel =require('./brand.model');
+const { messageString } = require('./brand.constant');
 
 // eslint-disable-next-line consistent-return
 exports.addBrand = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).json({ message: 'You must enter description & name.'});
+    return res.status(422).json({ message: messageString?.nameAndDescriptionRequired});
   }
   const { name, description,isActive } = req.body;
 
   try{
-    const category = new BrandModel({
+    const foundBrand = await BrandModel.findOne({
+      $or: [{ name }]
+    });
+
+    if (foundBrand && foundBrand?.name === name) {
+      return res.status(400).json({ message: messageString?.slugAlreadyInUser });
+    }
+
+    const brand = new BrandModel({
         name,
         description,
         isActive
       });
 
-      const foundCategory = await BrandModel.findOne({
-        $or: [{ name }]
-      });
-
-      if (foundCategory && foundCategory?.name === name) {
-        return res.status(400).json({ message: 'Slug is already in use.' });
-      }
-
       // eslint-disable-next-line consistent-return
-    category.save((err, data) => {
+      brand.save((err, data) => {
       if (err) {
         return res.status(400).json({
-          message: 'Your request could not be processed. Please try again.'
+          message: messageString?.requestNotProceed
         });
       }
     
     res.status(200).json({
       success: true,
-          message: 'Brand has been added successfully!',
-          category: data
+          message: messageString?.brandAddSuccess,
+          brand: data
       });
      });
     }
     catch(err){
         return res.status(400).json({
-          message: 'Your request could not be processed. Please try again.'
+          message: messageString?.requestNotProceed
         });
     }
 };
@@ -55,7 +56,7 @@ exports.getBrands=async(req,res)=>{
     });
   } catch (error) {
     res.status(400).json({
-      message: 'Your request could not be processed. Please try again.'
+      message: messageString?.requestNotProceed
     });
   }
 };
@@ -70,17 +71,17 @@ exports.updateBrand=async(req,res)=>{
   
    if(!foundBrand){
     return res.status(400).json({
-      message: 'Brand is not found!'
+      message: messageString?.brandNotFound
      });
    }
    
    return res.status(200).json({
       success: true,
-      message: 'Brand has been updated successfully!'
+      message: messageString?.brandUpdateSuccess
     });
   } catch (err) {
     return res.status(400).json({
-      message: 'Brand is not found!',
+      message: messageString?.brandNotFound,
     });
   }
 };
@@ -94,17 +95,17 @@ exports.deleteBrand=async(req, res)=>{
 
     if(!foundBrand){
      return res.status(400).json({
-      message: 'Brand is not found!'
+      message: messageString?.brandNotFound
       });
     }
     
     return res.status(200).json({
       success: true,
-      message: 'Brand has been deleted successfully!',
+      message: messageString?.brandDeleteSuccess,
     });
   } catch (error) {
     return res.status(400).json({
-      message: 'Your request could not be processed. Please try again.'
+      message: messageString?.requestNotProceed
     });
   }
 };

@@ -1,11 +1,12 @@
 const { validationResult } = require('express-validator');
 const CategoryModel =require('./category.model');
+const { messageString } = require('./category.constant');
 
 // eslint-disable-next-line consistent-return
 exports.addCategory = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).json({ message: 'You must enter description & name.'});
+    return res.status(422).json({ message: messageString?.nameAndDescriptionRequired});
   }
   const { name, description,isActive } = req.body;
 
@@ -20,27 +21,27 @@ exports.addCategory = async (req, res) => {
         $or: [{ name }]
       });
       if (foundCategory && foundCategory?.name === name) {
-        return res.status(400).json({ message: 'Slug is already in use.' });
+        return res.status(400).json({ message:messageString?.slugAlreadyInUser });
       }
 
       // eslint-disable-next-line consistent-return
     category.save((err, data) => {
       if (err) {
         return res.status(400).json({
-          message: 'Your request could not be processed. Please try again.'
+          message: messageString?.requestNotProceed
         });
       }
     
-    res.status(200).json({
+      return res.status(200).json({
       success: true,
-          message: 'Category has been added successfully!',
+          message: messageString?.categoryAddSuccess,
           category: data
       });
      });
     }
     catch(err){
         return res.status(400).json({
-          message: 'Your request could not be processed. Please try again.'
+          message: messageString?.requestNotProceed
         });
     }
 };
@@ -54,7 +55,7 @@ exports.getCategory=async(req,res)=>{
     });
   } catch (error) {
     res.status(400).json({
-      message: 'Your request could not be processed. Please try again.'
+      message: messageString?.requestNotProceed
     });
   }
 };
@@ -72,23 +73,23 @@ exports.updateCategory=async(req,res)=>{
    
     if(!foundCategory){
       return res.status(400).json({
-        message: 'Category is not found!'
+        message: messageString?.categoryNotFound
       });
     }
 
     if (foundCategory && foundCategory?._id?.toString() !== categoryId) {
-      return res.status(400).json({ message: 'Category not found!' });
+      return res.status(400).json({ message: messageString?.categoryNotFound });
     }
 
    await CategoryModel.findOneAndUpdate({_id: categoryId}, update);
 
    return res.status(200).json({
       success: true,
-      message: 'Category has been updated successfully!'
+      message: messageString?.categoryUpdateSuccess
     });
   } catch (err) {
     return res.status(400).json({
-      message: 'Your request could not be processed. Please try again.'
+      message: messageString?.requestNotProceed
     });
   }
 };
@@ -102,19 +103,19 @@ exports.deleteCategory=async(req, res)=>{
 
     if(!foundCategory){
      return res.status(400).json({
-      message: 'Category is not found!'
+      message: messageString?.categoryNotFound
       });
     }
 
     const product = await CategoryModel.deleteOne({ _id: id });
     return res.status(200).json({
       success: true,
-      message: 'Category has been deleted successfully!',
+      message: messageString?.categoryDeleteSuccess,
       product
     });
   } catch (error) {
     return res.status(400).json({
-      message: 'Your request could not be processed. Please try again.'
+      message: messageString?.requestNotProceed
     });
   }
 };

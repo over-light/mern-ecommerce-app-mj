@@ -2,6 +2,7 @@ const { caculateItems } = require('../../utils/commonFunctions');
 const OrderModel =require('./order.model');
 const ProductModel =require('../product/product.model');
 const { CART_ITEM_STATUS } = require('../../constants');
+const { messageString } = require('./order.constant');
 
 // Decrease quantity from product
 const decreaseQuantity = products => {
@@ -72,13 +73,13 @@ exports.addOrder = async (req, res) => {
 
       if(!products.length){
         return res.status(404).json({
-          message: 'Product not found'
+          message: messageString?.productNotFound
         });
       }
     }
     catch(err){
       res.status(400).json({
-        message: 'Your request could not be processed. Please try again.',err
+        message: messageString?.requestNotProceed
       });
     }
 
@@ -97,7 +98,7 @@ exports.addOrder = async (req, res) => {
 
       await decreaseQuantity(availableProduct);
 
-       lastOrder = await OrderModel.findById(orderDoc._id)
+      lastOrder = await OrderModel.findById(orderDoc._id)
       .sort('-created')
       .populate({
         path: 'products',
@@ -126,12 +127,12 @@ exports.addOrder = async (req, res) => {
   
       res.status(200).json({
         success: true,
-        message: 'Your order has been placed successfully!',
+        message: messageString?.orderSuccess,
         result:newOrder
       });
     } catch (err) {
       res.status(400).json({
-        message: 'Your request could not be processed. Please try again.',err
+        message: messageString?.requestNotProceed
       });
     }
 };
@@ -172,7 +173,7 @@ exports.getMyOrder=async(req, res)=>{
     });
   } catch (err) {
     res.status(400).json({
-      message: 'Your request could not be processed. Please try again.',err
+      message: messageString?.requestNotProceed
     });
   }
 };
@@ -187,7 +188,7 @@ exports.deleteOrder=async(req,res)=>{
     if(!order){
       return res.status(404).json({
         success: false,
-        error: 'Order not found!'
+        error: messageString?.orderNotFound
       });
     }
     increaseQuantity(order.products);
@@ -196,11 +197,11 @@ exports.deleteOrder=async(req,res)=>{
 
     return res.status(200).json({
       success: true,
-      message:'Order cancel successfull'
+      message:messageString?.orderCancelSucces
     });
   } catch (err) {
     return res.status(400).json({
-      message: 'Your request could not be processed. Please try again.',err
+      message: messageString?.requestNotProceed
     });
   }
 };
@@ -216,7 +217,7 @@ exports.updateStatus=async(req,res)=>{
   
     if (!foundOrder) {
       return res.status(404).json({
-        message: 'Order not found!',
+        message: messageString?.orderNotFound,
       });
     }
   
@@ -224,7 +225,7 @@ exports.updateStatus=async(req,res)=>{
   
     if (!foundCartProduct) {
       return res.status(404).json({
-        error: 'Product not found in the order!',
+        error: messageString?.productNotFoundThisOrder,
       });
     }
   
@@ -242,11 +243,11 @@ exports.updateStatus=async(req,res)=>{
   
     return res.status(200).json({
       success: true,
-      message: 'Item status has been updated successfully!'
+      message: messageString?.orderStatusUpdate
     });
   } catch (err) {
     return res.status(400).json({
-      message: 'Your request could not be processed. Please try again.',
+      message: messageString?.requestNotProceed,
       err 
     });
   }

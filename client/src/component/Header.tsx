@@ -23,6 +23,14 @@ export const Header: React.FC<HeaderProps> = () => {
     
     const firstLetter = authUser?.firstName?.split("")?.[0]?.toUpperCase()  || "";
 
+    // Logout user
+    const logoutUser=()=>{
+        localStorage.clear();
+        document.cookie = `user =;expires=Thu, 01 Jan 1970 00:00:01 GMT;`
+        document.cookie = `access_token =;expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+        
+        navigate('/login')
+    }
     return (
         <>
             <AppBar position="static">
@@ -58,7 +66,12 @@ export const Header: React.FC<HeaderProps> = () => {
                         </Box>
                         {authUser &&
                             <>
-                            <Chip sx={{ cursor: 'pointer',marginRight: '20px' }} avatar={<Avatar>{firstLetter}</Avatar>} color='secondary' label="Profile" />
+                            <Chip sx={{ cursor: 'pointer',marginRight: '20px' }} avatar={<Avatar>{firstLetter}</Avatar>} color='secondary' 
+                            label={
+                            <>
+                                <span className='logout_user' onClick={logoutUser}>Logout</span>
+                            </>
+                        } />
                             <Chip sx={{ cursor: 'pointer' }} onClick={()=>{navigate('/cart')}} avatar={<Avatar>{cartCount||0}</Avatar>} color='secondary' label="Cart" />
                             </>
                         }

@@ -20,7 +20,7 @@ exports.signup = async (req, res) => {
   try {
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
-      return res.status(422).json({ message: 'That email address is already in use.' });
+      return res.status(422).json({ message: messageString?.emailAlreadyUse });
     }
   } catch (err) {
     return res.status(500).json({ message: messageString?.signupFailed });
@@ -54,7 +54,7 @@ try{
 
     res.status(200).json({
       success: true,
-      message:'Register successfully',
+      message:messageString?.registerSuccess,
       user: {
         id: registeredUser.id,
         firstName: registeredUser.firstName,
@@ -79,7 +79,7 @@ catch(err)
 exports.login=async (req,res)=>{
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).json({ message: messageString?.invalidInputs });
+    return res.status(422).json({ message: messageString?.invalidInputs});
   }
   
   const { email, password } = req.body;
@@ -89,17 +89,17 @@ exports.login=async (req,res)=>{
     if (!user) {
       return res
         .status(400)
-        .send({ message: 'No user found for this email address.' });
+        .send({ message: messageString?.noUserFound });
     }
     if(!user.isActive){
       return res
         .status(400)
-        .send({ message: messageString.accountNotActive });
+        .send({ message:messageString?.accountNotActive });
     }
   }
   catch(err){
     res.status(400).json({
-      message: 'Your request could not be processed. Please try again.'
+      message: messageString?.requestNotProceed
     });
   }
 
@@ -108,14 +108,14 @@ exports.login=async (req,res)=>{
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        message: 'Password Incorrect'
+        message: messageString?.invalidCredenatial
       });
     }
   }
   catch(err){
     return res.status(400).json({
       success: false,
-      message: 'Password Incorrect'
+      message: messageString?.invalidCredenatial
     });
   }
 
@@ -135,7 +135,7 @@ exports.login=async (req,res)=>{
     
     res.status(200).json({
       success: true,
-      message:messageString.loginSuccess,
+      message:messageString?.loginSuccess,
       user: {
         id: user.id,
         firstName: user.firstName,
@@ -148,13 +148,14 @@ exports.login=async (req,res)=>{
   }
   catch(err){
     res.status(500).json({
-      message: 'Your request could not be processed. Please try again.'
+      message: messageString?.requestNotProceed
     });
   }
 };
 
 // eslint-disable-next-line consistent-return
 exports.forgot = async(req,res)=>{
+ 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ message: messageString?.invalidInputs });
@@ -169,13 +170,13 @@ exports.forgot = async(req,res)=>{
   if (!existingUser) {
     return res
       .status(400)
-      .send({ message: 'No user found for this email address.' });
+      .send({ message: messageString?.noUserFound });
   }
   
   if(!existingUser.isActive){
     return res
       .status(400)
-      .send({ message: messageString.accountNotActive });
+      .send({ message: messageString?.accountNotActive});
   }
 }
   catch(err){
@@ -185,13 +186,14 @@ exports.forgot = async(req,res)=>{
   }
 
   try{
+    
     const resetToken = crypto.randomBytes(64).toString('hex');
 
     existingUser.resetPasswordToken = resetToken;
     existingUser.resetPasswordExpires = Date.now() + 3600000;
 
     existingUser.save();
-
+    
     const url = `${BASE_URL}/user/${existingUser._id}/update-password/${resetToken}`;
 
     await sendEmail(
@@ -203,7 +205,7 @@ exports.forgot = async(req,res)=>{
 
     res.status(200).json({
       success: true,
-      message: 'Please check your email for the link to reset your password.'
+      message: messageString?.resetPasswordLinkMeesage
     });
   }
   catch(err){
@@ -219,7 +221,7 @@ exports.resetPassword = async (req, res) => {
     const { password } = req.body;
 
     if (!password) {
-      return res.status(400).json({ error: 'You must enter a password.' });
+      return res.status(400).json({ error: messageString?.passwordrequired });
     }
 
     const resetUser = await UserModel.findOne({
@@ -230,7 +232,7 @@ exports.resetPassword = async (req, res) => {
     if (!resetUser) {
       return res.status(400).json({
         message:
-          'Your token has expired. Please attempt to reset your password again.'
+          messageString?.tokenExpired
       });
     }
 
@@ -252,13 +254,12 @@ exports.resetPassword = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message:
-        'Password changed successfully. Please login with your new password.'
+      message:messageString?.passwordUpdatedSuccess
     });
 
   } catch (err) {
     res.status(400).json({
-      message: 'Your request could not be processed. Please try again.'
+      message: messageString?.requestNotProceed
     });
   }
 };
@@ -279,7 +280,7 @@ exports.verifyUser = async (req, res) => {
     }
 
     if(user.isActive){
-      return res.status(400).json({ message: messageString.userExist });
+      return res.status(400).json({ message: messageString?.userExist });
     }
 
     user.activateAccountToken = undefined;
@@ -296,7 +297,7 @@ exports.verifyUser = async (req, res) => {
     res.status(200).json({ message: messageString?.userVerifySuccess });
 
   } catch (err) {
-    return res.status(500).json({ message: messageString?.somethingWrong ,err});
+    return res.status(400).json({ message:messageString?.requestNotProceed});
   }
   
 };

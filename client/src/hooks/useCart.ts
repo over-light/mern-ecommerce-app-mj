@@ -108,7 +108,7 @@ const onUpdateCart=async(id:string,quantity:number)=>{
 
 // Place order api call
 const onPlaceOrder=async()=>{
-  const payload=cart.map((order: { price: string; _id: string; totalQuantity: number; })=>{return  {price:order?.price,product:order?._id,quantity:order?.totalQuantity}})
+  const payload=cart?.map((order: { price: string; _id: string; totalQuantity: number; })=>{return  {price:order?.price,product:order?._id,quantity:order?.totalQuantity}})
   console.log(payload)
 
   const response = await dispatch(

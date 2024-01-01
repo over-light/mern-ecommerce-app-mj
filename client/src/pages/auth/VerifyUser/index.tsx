@@ -2,6 +2,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import { useAuth } from "../../../hooks";
 import { useEffect } from 'react';
+import { Loader } from '../../../component/Loader';
 
 type VerifyUserProps = {}
 
@@ -14,10 +15,7 @@ const VerifyUser: React.FC<VerifyUserProps> = () => {
     }, [])
     return (
         <div className='centerDiv'>
-            <div className='overlay'></div>
-            <Box sx={{ display: 'flex' }}>
-                <CircularProgress />
-            </Box>
+            <Loader/>
         </div>
     );
 }

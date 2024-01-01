@@ -2,17 +2,19 @@
 import { Button, TextField, Typography,Container,Box } from "@mui/material";
 import { useAuth } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
+import { Loader } from "../../../component/Loader";
 
 type RegisterProps = {}
 
 export const Register: React.FC<RegisterProps> = () => {
     const navigate=useNavigate()
-    const { registerFormik } = useAuth();
+    const { registerFormik,auth } = useAuth();
     const { dirty, isValid, values, errors, touched, handleChange, handleSubmit, } = registerFormik;
     
     return (
         <Container 
             sx={{ paddingTop: "30px",}}>
+        {auth?.loading? <Loader/>:
             <Box
                 component="main"
                 sx={{maxWidth:"400px" , bgcolor: "background.default", p: 3, margin:"0 auto" }}
@@ -104,6 +106,7 @@ export const Register: React.FC<RegisterProps> = () => {
                     </Typography>
                 </form>
             </Box>
+        }
         </Container>
     );
 }

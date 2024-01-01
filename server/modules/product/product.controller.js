@@ -5,6 +5,7 @@ const { generateFileName, ProductPagination } = require('../../utils/commonFunct
 const { MIME_TYPE_MAP } = require('../../constants');
 const BrandModel =require('../brand/brand.model');
 const CategoryModel =require('../category/category.model');
+const { messageString } = require('./product.constant');
 
 // eslint-disable-next-line consistent-return
 exports.addProduct = async (req, res) => {
@@ -20,19 +21,19 @@ exports.addProduct = async (req, res) => {
         const foundProduct = await ProductModule.findOne({ sku });
       
         if (foundProduct) {
-          return res.status(400).json({ message: 'This product is already in use.' });
+          return res.status(400).json({ message: messageString?.productInUse });
         }
   
         const findBrand=await BrandModel.findById(brand);
 
         if (!findBrand) {
-          return res.status(400).json({ message: 'Brand not found' });
+          return res.status(400).json({ message: messageString?.brandNotFound });
         }
 
         const findCategory=await CategoryModel.findById(category);
 
         if (!findCategory) {
-          return res.status(400).json({ message: 'Category not found' });
+          return res.status(400).json({ message: messageString?.categoryNotFound });
         }
 
         const fileName = `${generateFileName()}.${MIME_TYPE_MAP[req?.file.mimetype]}`;
@@ -57,7 +58,7 @@ exports.addProduct = async (req, res) => {
   
         res.status(200).json({
           success: true,
-          message: 'Product has been added successfully!',
+          message: messageString?.productAddSuccess,
           product: savedProduct
         });
       } catch (error) {
@@ -91,7 +92,7 @@ exports.getProduct = async (req, res) => {
     
   } catch (err) {
     res.status(400).json({
-      message: 'Your request could not be processed. Please try again.',err
+      message: messageString?.requestNotProceed
     });
   }
 };
@@ -110,7 +111,7 @@ exports.getProductBySlug=async(req,res)=>{
 
     if (!productDoc || hasNoBrand) {
       return res.status(404).json({
-        message: 'No product found.'
+        message: messageString?.productNotFound
       });
     }
 
@@ -119,7 +120,7 @@ exports.getProductBySlug=async(req,res)=>{
     });
   } catch (err) {
     res.status(400).json({
-      message: 'Your request could not be processed. Please try again.',err
+      message:messageString?.requestNotProceed
     });
   }
 };
@@ -137,17 +138,17 @@ exports.updateProduct=async(req,res)=>{
     
     if(!product){
       return res.status(400).json({
-         error: 'Product is not found'
+         error: messageString?.productNotFound
        });
      }
 
     res.status(200).json({
       success: true,
-      message: 'Product has been updated successfully!'
+      message: messageString?.productUpdateSuccess
     });
   } catch (error) {
     res.status(400).json({
-      message: 'Your request could not be processed. Please try again.'
+      message: messageString?.requestNotProceed
     });
   }
 };
@@ -159,7 +160,7 @@ exports.deleteProduct=async(req,res)=>{
     
     if(!product){
       return res.status(400).json({
-        message: 'Product is not found'
+        message: messageString?.productNotFound
        });
      }
 
@@ -167,11 +168,11 @@ exports.deleteProduct=async(req,res)=>{
 
     res.status(200).json({
       success: true,
-      message: 'Product has been deleted successfully!',
+      message: messageString?.productDeleteSuccess,
     });
   } catch (error) {
     return res.status(400).json({
-      message: 'Your request could not be processed. Please try again.'
+      message: messageString?.requestNotProceed
     });
   }
 };

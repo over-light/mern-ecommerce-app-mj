@@ -6,11 +6,13 @@ import { Container, InputLabel, MenuItem, Select, TextField } from "@mui/materia
 import { useCart } from "../../../hooks/useCart";
 import { ProductProps } from "../../../store/reducers/Product/type";
 import { useAppSelector } from "../../../store/hooks";
+import { Loader } from "../../../component/Loader";
 
 type ProductListProps = {};
 
 export const ProductList: React.FC<ProductListProps> = () => {
-  const { products,onProductFilterChange,productFilter } = useProduct();
+  const {onProductFilterChange,productFilter } = useProduct();
+  const products = useAppSelector((state) => state.product);
   const categories = useAppSelector((state) => state.category);
   const brand = useAppSelector((state) => state.brand);
   const {onAddCart}=useCart()
@@ -25,11 +27,11 @@ const renderBrand = ()=>{
   ?.map((cat: { name: string ,_id:string })=> <MenuItem key={cat._id} value={cat._id}>{cat?.name}</MenuItem>)
 }
 
-
   return (
     <Container maxWidth="xl" sx={{ paddingTop: "30px" }}>
-      <Box>
-      <Box
+      {products?.loading?<Loader/>:
+      <>
+        <Box
           component="main" mb={4}
           sx={{ width: "100%", bgcolor: "background.default", p: 3 }}
         >
@@ -98,9 +100,6 @@ const renderBrand = ()=>{
           </div>
         </div>
         </Box>
-      
-       
-
         <Box
           component="main"
           sx={{ width: "100%", bgcolor: "background.default", p: 3 }}
@@ -112,16 +111,17 @@ const renderBrand = ()=>{
             sx={{ marginTop: 2 }}
           >
             {products &&
-              products?.map((product: ProductProps) => {
+              products?.products?.products?.map((product: ProductProps) => {
                 return (
-                  <Grid item xs={3}>
+                  <Grid item xs={3} key={product._id}>
                     <ProductItem   {...{onAddCart,product}}/>
                   </Grid>
                 );
               })}
           </Grid>
         </Box>
-      </Box>
+      </>
+      }
     </Container>
   );
 };

@@ -79,6 +79,9 @@ const authSlice = createSlice({
         reset: () => initialState
     },
     extraReducers: builder => {
+        builder.addCase(signup.pending, state => {
+            state.loading = true
+        })
         builder.addCase(
             signup.fulfilled,
             (state, action: PayloadAction<SignupResponseProps>) => {
@@ -106,6 +109,44 @@ const authSlice = createSlice({
             }
         )
         builder.addCase(login.rejected, (state, action) => {
+            state.loading = false
+            state.auth = {}
+            state.error = action.error.message || 'Something went wrong'
+        })
+
+
+        //Forgot password
+        builder.addCase(forgotPassword.pending, state => {
+            state.loading = true
+        })
+        builder.addCase(
+            forgotPassword.fulfilled,
+            (state, action: PayloadAction<SignupResponseProps>) => {
+                state.loading = false
+                state.auth = action.payload
+                state.error = ''
+            }
+        )
+        builder.addCase(forgotPassword.rejected, (state, action) => {
+            state.loading = false
+            state.auth = {}
+            state.error = action.error.message || 'Something went wrong'
+        })
+
+
+         //Update password
+        builder.addCase(updatePassword.pending, state => {
+            state.loading = true
+        })
+        builder.addCase(
+            updatePassword.fulfilled,
+            (state, action: PayloadAction<SignupResponseProps>) => {
+                state.loading = false
+                state.auth = action.payload
+                state.error = ''
+            }
+        )
+        builder.addCase(updatePassword.rejected, (state, action) => {
             state.loading = false
             state.auth = {}
             state.error = action.error.message || 'Something went wrong'
