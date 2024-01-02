@@ -35,14 +35,14 @@ export const Product =()=>{
                         <p>{product?.description}</p>
                         <b>${product?.price}</b>
                         <span className="input-wrapper">
-                            <button id="decrement" onClick={()=>onCartItemUpdate(totalQuantity-1,product.quantity)}>-</button>
+                            <button id="decrement" onClick={()=>onCartItemUpdate(totalQuantity-1,product?.quantity)}>-</button>
                             <input 
                                 type="number"
                                 onChange={(e)=>e.preventDefault()}
                                 value={totalQuantity} min={1} max={product.quantity}/>
-                            <button id="increment" onClick={()=>onCartItemUpdate(totalQuantity+1,product.quantity)}>+</button>
+                            <button id="increment" onClick={()=>onCartItemUpdate(totalQuantity+1,product?.quantity)}>+</button>
                         </span>
-                        <Button onClick={()=>{onAddCart(product)}}>{isItemInCart?'Update Cart':'Add to Cart'}</Button>
+                       {product?.quantity>0? <Button onClick={()=>{onAddCart(product)}}>{isItemInCart?'Update Cart':'Add to Cart'}</Button>:<p className="error">Out of stock</p>}
                     </Item>
                 </Grid>
             </Grid>

@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Box, Container} from "@mui/material";
+import { Box, Button, Container} from "@mui/material";
 import { useOrder } from "../../hooks/useOrder"
 import { useAppSelector } from "../../store/hooks";
 import { formatDate } from '../../utils/commonFunction';
@@ -28,9 +28,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 export const Order=()=>{
   const navigate=useNavigate()
     useOrder()
-    const orderItem = useAppSelector((state) => state.order);
+    const orderItem = useAppSelector((state) => state.order); 
 
-console.log("orderItem",orderItem?.loading)
     return (
     <Container
         sx={{ paddingTop: "30px",}}>
@@ -40,6 +39,7 @@ console.log("orderItem",orderItem?.loading)
         sx={{maxWidth:"1024" , bgcolor: "background.default", p: 3, margin:"0 auto" }}
         >
         <TableContainer component={Paper}>
+          {orderItem?.orderItem?.orders?.length?
           <Table>
             <TableHead>
               <TableRow>
@@ -72,6 +72,11 @@ console.log("orderItem",orderItem?.loading)
               )}
             </TableBody>
           </Table>
+          :<div className="message">
+          <h1>Your Order list  is Empty</h1>
+          <p>Add something to make me happy :)</p>
+          <Button variant='contained' onClick={()=>{navigate('/')}}>continue shopping</Button>
+        </div> }
         </TableContainer>
       </Box>
         }

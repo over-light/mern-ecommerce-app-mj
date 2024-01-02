@@ -65,16 +65,14 @@ export const Header: React.FC<HeaderProps> = () => {
                       
                         </Box>
                         {authUser &&
-                            <>
                             <Chip sx={{ cursor: 'pointer',marginRight: '20px' }} avatar={<Avatar>{firstLetter}</Avatar>} color='secondary' 
                             label={
                             <>
                                 <span className='logout_user' onClick={logoutUser}>Logout</span>
                             </>
                         } />
-                            <Chip sx={{ cursor: 'pointer' }} onClick={()=>{navigate('/cart')}} avatar={<Avatar>{cartCount||0}</Avatar>} color='secondary' label="Cart" />
-                            </>
                         }
+                         <Chip sx={{ cursor: 'pointer' }} onClick={()=>{navigate('/cart')}} avatar={<Avatar>{cartCount||0}</Avatar>} color='secondary' label="Cart" />
                     </Toolbar>
                 </Container>
             </AppBar>

@@ -11,6 +11,7 @@ import { Box, Button, Container, TableFooter } from "@mui/material";
 import { useCart } from "../../hooks/useCart";
 import { useAppSelector } from '../../store/hooks';
 import { Loader } from '../../component/Loader';
+import { useNavigate } from 'react-router-dom';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -34,6 +35,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }));
 
 export const Cart=()=>{
+  const navigate=useNavigate();
   const {onUpdateCart,cart,onPlaceOrder} =useCart();
 
 //Get state from reducers
@@ -60,7 +62,6 @@ const calculateTotalPrice = () => {
   return totalPrice.toFixed(2);
 };
 
-console.log("order",order?.loading)
 return (
     <Container
         sx={{ paddingTop: "30px",}}>
@@ -70,7 +71,7 @@ return (
           sx={{maxWidth:"1024" , bgcolor: "background.default", p: 3, margin:"0 auto" }}
           >
             <TableContainer component={Paper}>
-              {cart.length>0&&
+              {cart?.length>0?
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                   <TableHead>
                     <TableRow>
@@ -120,7 +121,13 @@ return (
                     </TableRow>
                   </TableFooter>
                 </Table>
-              }
+            :
+            <div className="message">
+              <h1>Your Cart is Empty</h1>
+              <p>Add something to make me happy :)</p>
+              <Button variant='contained' onClick={()=>{navigate('/')}}>continue shopping</Button>
+            </div> 
+           }
             </TableContainer>
         </Box>
       }

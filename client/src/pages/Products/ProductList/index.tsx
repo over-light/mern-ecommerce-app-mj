@@ -2,7 +2,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { ProductItem } from "../../../component/ProductItem";
 import { useProduct } from "../../../hooks/useProduct";
-import { Container, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Container, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { useCart } from "../../../hooks/useCart";
 import { ProductProps } from "../../../store/reducers/Product/type";
 import { useAppSelector } from "../../../store/hooks";
@@ -110,14 +110,18 @@ const renderBrand = ()=>{
             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             sx={{ marginTop: 2 }}
           >
-            {products &&
+            {products?.products?.products?.length ?
               products?.products?.products?.map((product: ProductProps) => {
                 return (
-                  <Grid item xs={3} key={product._id}>
+                  <Grid item xs={6} md={4} key={product._id}>
                     <ProductItem   {...{onAddCart,product}}/>
                   </Grid>
                 );
-              })}
+              }):
+              <div className="message">
+                <h1>No Products Found</h1>
+                <p>Sorry, we couldn't find any products matching your search.</p>
+              </div>}
           </Grid>
         </Box>
       </>

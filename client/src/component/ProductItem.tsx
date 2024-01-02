@@ -34,7 +34,7 @@ export const ProductItem: React.FC<ProductItemProps> = ({ product,onAddCart }) =
       <div  className="card">
         <h3>{product?.name}</h3>
         <p>{product?.description}</p>
-        <p className="price">{product?.price}</p>
+        <p className="price">Price :${product?.price}</p>
       </div>
          
     </Item>
