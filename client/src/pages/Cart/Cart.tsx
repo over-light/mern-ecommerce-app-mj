@@ -38,6 +38,13 @@ export const Cart=()=>{
   const navigate=useNavigate();
   const {onUpdateCart,cart,onPlaceOrder} =useCart();
 
+  const user: any = document!.cookie
+    .split("; ")
+    .find((row) => row.startsWith("user="))
+    ?.split("=")[1];
+
+    const authUser=user?JSON.parse(user):undefined;
+
 //Get state from reducers
 const order = useAppSelector((state) => state.order);
 
@@ -116,7 +123,12 @@ return (
                     </TableRow>
                     <TableRow >
                     <StyledTableCell align="right" colSpan={4}>
-                      <Button sx={{margin: "7px 0"}} type="button" variant="contained" onClick={onPlaceOrder}>Place Order</Button>
+                      <Button sx={{margin: "7px 0"}} type="button" variant="contained" onClick={()=>{
+                        if(authUser){
+                          onPlaceOrder()
+                        }
+                        navigate('/login')
+                      }}>{authUser?'Place Order':'Login'}</Button>
                       </StyledTableCell>
                     </TableRow>
                   </TableFooter>

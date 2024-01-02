@@ -42,7 +42,7 @@ export const Product =()=>{
                                 value={totalQuantity} min={1} max={product.quantity}/>
                             <button id="increment" onClick={()=>onCartItemUpdate(totalQuantity+1,product?.quantity)}>+</button>
                         </span>
-                       {product?.quantity>0? <Button onClick={()=>{onAddCart(product)}}>{isItemInCart?'Update Cart':'Add to Cart'}</Button>:<p className="error">Out of stock</p>}
+                       {product?.quantity>0? <Button sx={{width:'200px'}} variant="contained" onClick={()=>{onAddCart(product)}}>{isItemInCart?'Update Cart':'Add to Cart'}</Button>:<p className="error">Out of stock</p>}
                     </Item>
                 </Grid>
             </Grid>
