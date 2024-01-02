@@ -249,7 +249,7 @@ exports.resetPassword = async (req, res) => {
       resetUser.email,
       messageString?.successPassword,
       '',
-      emailTemplate.passwordUpdated(messageString?.successPassword)
+      emailTemplate.passwordUpdated()
     );
 
     res.status(200).json({
@@ -288,11 +288,12 @@ exports.verifyUser = async (req, res) => {
     user.isActive=true;
     user.save();
 
+    const username= `${user?.firstName} ${user?.lastName}`;
     await sendEmail(
       user.email,
       messageString?.accountActivated,
       '',
-      emailTemplate.accountActivated()
+      emailTemplate.accountActivated(username)
     );
     res.status(200).json({ message: messageString?.userVerifySuccess });
 
