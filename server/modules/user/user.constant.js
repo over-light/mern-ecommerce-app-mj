@@ -15,5 +15,6 @@ exports.messageString = {
   successPassword: 'Password updated successfully',
   inValidLink: 'Invalid Link',
   userExist: 'User exists already, please login instead.',
-  userVerifySuccess: 'User verify successfully'
+  userVerifySuccess: 'User verify successfully',
+  accountActivated:'Account activate successfully'
 };

@@ -1,16 +1,16 @@
 # MERN Ecommerce
 An ecommerce store built with MERN stack, This ecommerce store enable two main different flows or implementations:
 
-1. Buyers browse the store categories, products, brands and category and 
-2. Admins manage and control the entire store components 
+1. Buyers browse the store categories, products, brands and category.
+2. Admins manage and control the entire store components.
 
 
 * features:
-  * Node provides the backend environment for this application
-  * Express middleware is used to handle requests, routes
-  * Mongoose schemas to model the application data
-  * React for displaying UI components
-  * Redux to manage application's state
+  * Node provides the backend environment for this application.
+  * Express middleware is used to handle requests, routes.
+  * Mongoose schemas to model the application data.
+  * React for displaying UI components.
+  * Redux to manage application's state.
  
 
  ## Database Seed
